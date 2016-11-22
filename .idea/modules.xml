@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-846586774/com.anwarruff.sedgwick.algorithms.iml" filepath="$PROJECT_DIR$/.idea/modules/-846586774/com.anwarruff.sedgwick.algorithms.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-846586774/com.anwarruff.sedgwick.algorithms_main.iml" filepath="$PROJECT_DIR$/.idea/modules/-846586774/com.anwarruff.sedgwick.algorithms_main.iml" group="com.anwarruff.sedgwick.algorithms" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-846586774/com.anwarruff.sedgwick.algorithms_test.iml" filepath="$PROJECT_DIR$/.idea/modules/-846586774/com.anwarruff.sedgwick.algorithms_test.iml" group="com.anwarruff.sedgwick.algorithms" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.anwarruff.sedgwick.algorithms.iml" filepath="$PROJECT_DIR$/.idea/modules/com.anwarruff.sedgwick.algorithms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.anwarruff.sedgwick.algorithms_main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.anwarruff.sedgwick.algorithms_main.iml" group="com.anwarruff.sedgwick.algorithms" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.anwarruff.sedgwick.algorithms_test.iml" filepath="$PROJECT_DIR$/.idea/modules/com.anwarruff.sedgwick.algorithms_test.iml" group="com.anwarruff.sedgwick.algorithms" />
     </modules>
   </component>
 </project>
