@@ -8,15 +8,8 @@ import java.util.Comparator;
  * Created by aruff on 11/18/16.
  */
 public class Point implements Comparable<Point>{
-
     private final int x;     // x-coordinate of this point
     private final int y;     // y-coordinate of this point
-    private final double HORIZONTAL = +0.0;
-    private final double VERTICAL = Double.POSITIVE_INFINITY;
-    private final double DEGENERATE = Double.NEGATIVE_INFINITY;
-    private final int LESS = -1;
-    private final int GREATER = 1;
-    private final int EQUAL = 0;
 
     /**
      * Initializes a new point.
@@ -60,6 +53,9 @@ public class Point implements Comparable<Point>{
      * @return the slope between this point and the specified point
      */
     public double slopeTo(Point p) {
+        double HORIZONTAL = +0.0;
+        double VERTICAL = Double.POSITIVE_INFINITY;
+        double DEGENERATE = Double.NEGATIVE_INFINITY;
         if (p.y == y && p.x == x) {
             return DEGENERATE;
         }
@@ -87,6 +83,9 @@ public class Point implements Comparable<Point>{
      *         argument point
      */
     public int compareTo(Point p) {
+        int LESS = -1;
+        int GREATER = 1;
+        int EQUAL = 0;
         if (this.y < p.y) {
             return LESS;
         }
@@ -111,18 +110,18 @@ public class Point implements Comparable<Point>{
      * @return the Comparator that defines this ordering on points
      */
     public Comparator<Point> slopeOrder() {
-        return new Comparator<Point>() {
-            @Override
-            public int compare(Point p1, Point p2) {
-                if (slopeTo(p1) < slopeTo(p2)) {
-                    return LESS;
-                }
-                else if (slopeTo(p1) > slopeTo(p2)) {
-                    return GREATER;
-                }
-                else {
-                    return EQUAL;
-                }
+        int LESS = -1;
+        int GREATER = 1;
+        int EQUAL = 0;
+        return (p1, p2) -> {
+            if (slopeTo(p1) < slopeTo(p2)) {
+                return LESS;
+            }
+            else if (slopeTo(p1) > slopeTo(p2)) {
+                return GREATER;
+            }
+            else {
+                return EQUAL;
             }
         };
     }

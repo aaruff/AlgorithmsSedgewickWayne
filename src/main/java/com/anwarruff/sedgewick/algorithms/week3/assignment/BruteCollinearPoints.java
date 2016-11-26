@@ -1,68 +1,52 @@
 package com.anwarruff.sedgewick.algorithms.week3.assignment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Created by aruff on 11/19/16.
  */
 public class BruteCollinearPoints {
     private final LineSegment[] lineSegments;
+    private final int EQUAL = 0;
 
-    /**
-     * Find all line segments containing 4 points at a time, and checks whether they all lie
-     * on the same line segment, returning all such line segments.
-     * @param points
-     */
     public BruteCollinearPoints(Point[] points) {
         if (points == null) {
             throw new NullPointerException();
         }
 
+        Point[] copy = new Point[points.length];
+        System.arraycopy(points, 0, copy, 0, points.length);
+
         ArrayList<LineSegment> segments = new ArrayList<>();
-        for (int i = 0; i < points.length; ++i) {
-            Point p = points[i];
-            if (p == null) {
+        for (int i = 0; i < copy.length; ++i) {
+            Point p = copy[i];
+            if (p == null)
                 throw new NullPointerException();
-            }
-            for (int j = i + 1; j < points.length; ++j) {
-                Point q = points[j];
-                if (q == null) {
+            for (int j = i + 1; j < copy.length; ++j) {
+                Point q = copy[j];
+                if (q == null)
                     throw new NullPointerException();
-                }
-                else if (p.compareTo(q) == 0) {
+                if (p.compareTo(q) == EQUAL)
                     throw new IllegalArgumentException();
-                }
-                for (int k = j + 1; k < points.length; ++k) {
-                    Point r = points[k];
-                    if (r == null) {
+
+                for (int k = j + 1; k < copy.length; ++k) {
+                    Point r = copy[k];
+                    if (r == null)
                         throw new NullPointerException();
-                    }
-                    else if (p.compareTo(r) == 0 || q.compareTo(r) == 0) {
+                    if (r.compareTo(p) == EQUAL || r.compareTo(q) == EQUAL)
                         throw new IllegalArgumentException();
-                    }
-                    for (int l = k + 1; l < points.length; ++l) {
-                        Point s = points[l];
-                        if (s == null) {
+                    for (int l = k + 1; l < copy.length; ++l) {
+                        Point s = copy[l];
+                        if (s == null)
                             throw new NullPointerException();
-                        }
-                        else if (p.compareTo(s) == 0 || q.compareTo(s) == 0 || r.compareTo(s) == 0) {
+                        if (s.compareTo(p) == EQUAL || s.compareTo(q) == EQUAL || s.compareTo(r) == EQUAL)
                             throw new IllegalArgumentException();
-                        }
 
                         if (p.slopeTo(q) == p.slopeTo(r) && p.slopeTo(q) == p.slopeTo(s)) {
-                            Point[] line = {p, q, r, s};
-                            Point min = p;
-                            Point max = p;
-                            for (int m = 0; m < line.length; ++m) {
-                                if (line[m].compareTo(max) == 1) {
-                                    max = line[m];
-                                }
-                                if (line[m].compareTo(max) == -1) {
-                                    min = line[m];
-                                }
-                            }
-
-                            segments.add(new LineSegment(min, max));
+                            ArrayList<Point> line = new ArrayList<>(Arrays.asList(p, q, r, s));
+                            segments.add(new LineSegment(Collections.min(line), Collections.max(line)));
                         }
                     }
                 }
@@ -81,6 +65,8 @@ public class BruteCollinearPoints {
     }
 
     public LineSegment[] segments() {
-        return lineSegments;
+        LineSegment[] copy = new LineSegment[lineSegments.length];
+        System.arraycopy(lineSegments, 0, copy, 0, lineSegments.length);
+        return copy;
     }
 }
