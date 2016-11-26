@@ -1,6 +1,5 @@
 package com.anwarruff.sedgewick.algorithms.week3.assignment;
 
-
 import java.util.*;
 
 public class FastCollinearPoints {
@@ -11,10 +10,9 @@ public class FastCollinearPoints {
             throw new NullPointerException();
         }
 
-        double DEGENERATE = Double.NEGATIVE_INFINITY;
-        ArrayList<LineSegment> lines = new ArrayList<>();
         CollinearPoint[] copy = new CollinearPoint[points.length];
         CollinearPoint[] original = new CollinearPoint[points.length];
+        double DEGENERATE = Double.NEGATIVE_INFINITY;
         for (int i = 0; i < points.length; ++i) {
             if (points[i] == null) {
                 throw new NullPointerException();
@@ -28,6 +26,7 @@ public class FastCollinearPoints {
             original[i] = copy[i];
         }
 
+        ArrayList<LineSegment> lines = new ArrayList<>();
         for (int i = 0; i < original.length; ++i) {
             CollinearPoint p = original[i];
 
@@ -43,7 +42,7 @@ public class FastCollinearPoints {
                    linePoints.add(copy[j]);
                 }
 
-                if (linePoints.size() >= 3  && (! matchingSlopesFound || j == original.length-1)){
+                if (linePoints.size() >= 3  && (! matchingSlopesFound || j == copy.length-1)){
                     linePoints.add(p);
                     CollinearPoint minPoint = Collections.min(linePoints);
                     CollinearPoint maxPoint = Collections.max(linePoints);
