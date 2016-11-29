@@ -21,20 +21,35 @@ public class Board {
         }
     }
 
+    public int manhattan() {
+        int sum = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int solution = i * n + (j + 1);
+                if (tiles[i][j] != solution && tiles[i][j] != 0) {
+                    int row = (tiles[i][j]-1) / n;
+                    int col = tiles[i][j]-1 - (n * row);
+                    sum += Math.abs(row-i) + Math.abs(col - j);
+                }
+            }
+        }
+
+        return sum;
+    }
+
     public int hamming() {
         int sum = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 int solution = i * n + (j + 1);
                 if (tiles[i][j] != solution && tiles[i][j] != 0) {
-                    int row = Math.abs(((tiles[i][j]-1) / n) - i);
-                    int col = Math.abs((tiles[i][j]-1) - (n * row) - j);
-                    sum += row + col;
+                    ++sum;
                 }
             }
         }
 
         return sum;
+
     }
 
     public int dimension() {

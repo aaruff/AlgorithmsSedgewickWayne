@@ -23,7 +23,7 @@ public class BoardTest {
     }
 
     @Test
-    public void testHamming() {
+    public void testManhattan() {
         /*
          *   Solution
          * +---+---+---+
@@ -52,11 +52,52 @@ public class BoardTest {
          * 7: (0, 0, 0)
          * 6: (1, 1, 2)
          * 5: (1, 1, 2)
-         * Total = 10
+         * Manhattan Distance = 3 + 1 + 0 + 0 + 2 + 0 + 2 + 2 = 10
          */
         int[][] initial = {{8, 1, 3}, {4, 0, 2}, {7, 6, 5}};
         Board board = new Board(initial);
-        assertEquals(10, board.hamming());
+        assertEquals(10, board.manhattan());
+    }
+
+    @Test
+    public void testHamming() {
+        /*
+         *   Solution
+         * +---+---+---+
+         * | 1 | 2 | 3 |
+         * +---+---+---+
+         * | 4 | 5 | 6 |
+         * +---+---+---+
+         * | 7 | 8 |   |
+         * +---+---+---+
+         *
+         *    Entry
+         * +---+---+---+
+         * | 8 | 1 | 3 |
+         * +---+---+---+
+         * | 4 |   | 2 |
+         * +---+---+---+
+         * | 7 | 6 | 5 |
+         * +---+---+---+
+         *
+         * If a tile is out of place, it's Hamming value is 1, otherwise it's 0.
+         * The total hamming distance is the sum of the Hamming distance for each tile, precluding the empty tile.
+         *
+         *    Hamming
+         * +---+---+---+
+         * | 1 | 1 | 0 |
+         * +---+---+---+
+         * | 0 |   | 1 |
+         * +---+---+---+
+         * | 0 | 1 | 1 |
+         * +---+---+---+
+         *
+         * Hamming Distance = 1 + 1 + 0 + 0 + 1 + 0 + 1 + 1 = 5
+         */
+
+        int[][] initial = {{8, 1, 3}, {4, 0, 2}, {7, 6, 5}};
+        Board board = new Board(initial);
+        assertEquals(5, board.hamming());
     }
 
 }
