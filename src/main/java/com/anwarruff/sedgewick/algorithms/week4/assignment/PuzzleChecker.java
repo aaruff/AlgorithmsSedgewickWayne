@@ -1,3 +1,4 @@
+package com.anwarruff.sedgewick.algorithms.week4.assignment;
 /******************************************************************************
  *  Compilation:  javac PuzzleChecker.java
  *  Execution:    java PuzzleChecker filename1.txt filename2.txt ...
@@ -46,9 +47,9 @@ public class PuzzleChecker {
             }
 
             // solve the slider puzzle
-            Board initial = new Board(tiles);
-            Solver solver = new Solver(initial);
-            StdOut.println(filename + ": " + solver.moves());
+            //Board initial = new Board(tiles);
+            //Solver solver = new Solver(initial);
+            //StdOut.println(filename + ": " + solver.moves());
         }
     }
 }
