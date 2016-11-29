@@ -13,7 +13,7 @@ public class Board {
 
         n = tiles.length;
 
-        tiles = new int[n][n];
+        this.tiles = new int[n][n];
         for (int i = 0; i < n; ++i) {
           for (int j = 0; j < n; ++j) {
               this.tiles[i][j] = tiles[i][j];
