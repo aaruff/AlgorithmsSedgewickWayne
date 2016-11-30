@@ -100,4 +100,16 @@ public class BoardTest {
         assertEquals(5, board.hamming());
     }
 
+    @Test
+    public void testIsGoal() {
+        int[][] v1 = {{8, 1, 3}, {4, 0, 2}, {7, 6, 5}};
+        Board b1 = new Board(v1);
+        assertFalse(b1.isGoal());
+
+        int[][] v2 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 0}};
+        Board b2 = new Board(v2);
+        assertTrue(b2.isGoal());
+
+    }
+
 }
