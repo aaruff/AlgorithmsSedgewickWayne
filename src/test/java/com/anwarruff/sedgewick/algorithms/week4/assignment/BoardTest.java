@@ -2,6 +2,8 @@ package com.anwarruff.sedgewick.algorithms.week4.assignment;
 
 import org.junit.Test;
 
+import java.util.Iterator;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 
@@ -109,7 +111,69 @@ public class BoardTest {
         int[][] v2 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 0}};
         Board b2 = new Board(v2);
         assertTrue(b2.isGoal());
+    }
 
+    @Test
+    public void testEquals() {
+        int[][] v1 = {{8, 1, 3}, {4, 0, 2}, {7, 6, 5}};
+        int[][] v2 = {{8, 1, 3}, {4, 0, 2}, {7, 6, 5}};
+        Board b1 = new Board(v1);
+        Board b2 = new Board(v2);
+        assertTrue(b1.equals(b2));
+
+        int[][] v3 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 0}};
+        Board b3 = new Board(v3);
+        assertFalse(b1.equals(b3));
+    }
+
+    @Test
+    public void testTwin() {
+        int[][] v1 = {{8, 1, 3}, {4, 0, 2}, {7, 6, 5}};
+        Board board = new Board(v1);
+        assertFalse(board.equals(board.twin()));
+    }
+
+    @Test
+    public void testIterable() {
+        /*
+         *  Board
+         * +---+---+---+
+         * |   | 1 | 2 |
+         * +---+---+---+
+         * | 3 | 4 | 5 |
+         * +---+---+---+
+         * | 6 | 7 | 8 |
+         * +---+---+---+
+         *
+         *  Neighbors
+         * +---+---+---+
+         * | 3 | 1 | 2 |
+         * +---+---+---+
+         * |   | 4 | 5 |
+         * +---+---+---+
+         * | 6 | 7 | 8 |
+         * +---+---+---+
+         *
+         * +---+---+---+
+         * | 1 |   | 2 |
+         * +---+---+---+
+         * | 3 | 4 | 5 |
+         * +---+---+---+
+         * | 6 | 7 | 8 |
+         * +---+---+---+
+         */
+        int[][] v1 = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}};
+        Board board = new Board(v1);
+        Iterable<Board> iterable = board.neighbors();
+
+        int[][] v2 = {{3, 1, 2}, {0, 4, 5}, {6, 7, 8}};
+        Board b2 = new Board(v2);
+        int[][] v3 = {{1, 0, 2}, {3, 4, 5}, {6, 7, 8}};
+        Board b3 = new Board(v3);
+
+        for (Board b : iterable) {
+            assertTrue(b.equals(b2) || b.equals(b3));
+        }
     }
 
 }
