@@ -9,15 +9,13 @@ import java.util.ArrayList;
  */
 public class BFSSolver {
     private ArrayList<Board> moves = new ArrayList<>();
+    private MinPQ<SearchNode> minPQ = new MinPQ<>();
     private boolean solved = false;
-    private int numMoves = 0;
 
     private Board solution;
-    private MinPQ<SearchNode> minPQ;
 
     public BFSSolver(SearchNode searchNode, Board solution) {
         this.solution = solution;
-        minPQ = new MinPQ<>();
         minPQ.insert(searchNode);
     }
 
@@ -30,7 +28,6 @@ public class BFSSolver {
         SearchNode previous = searchNode.getPrevious();
 
         moves.add(searchNode.getBoard());
-        ++numMoves;
 
         if (searchNode.isBoardEqual(solution)) {
             solved = true;
@@ -39,7 +36,7 @@ public class BFSSolver {
         else {
             for (Board neighbor : searchNode.getNeighbors()) {
                 if ( previous == null || ! previous.isBoardEqual(neighbor)) {
-                    minPQ.insert(new SearchNode(neighbor, searchNode, numMoves));
+                    minPQ.insert(new SearchNode(neighbor, searchNode, moves.size()));
                 }
             }
 
@@ -52,6 +49,6 @@ public class BFSSolver {
     }
 
     public int getNumMoves() {
-        return numMoves;
+        return (moves.size() == 0) ? -1 : moves.size() - 1;
     }
 }

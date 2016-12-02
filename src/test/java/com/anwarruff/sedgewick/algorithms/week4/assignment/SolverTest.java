@@ -74,31 +74,30 @@ public class SolverTest {
     }
 
     @Test
-    public void testBFSSolver() {
-        int[][] solutionTiles = {{1, 2, 3}, {4, 5, 6}, {7, 8, 0}};
-        Board solution = new Board(solutionTiles);
+    public void testSolvableBoard() {
+        int[][] sol = {{1, 2, 3}, {4, 5, 6}, {7, 8, 0}};
+        int[][][] tiles = {
+                {{0, 1, 3}, {4, 2, 5}, {7, 8, 6}},
+                {{1, 0, 3}, {4, 2, 5}, {7, 8, 6}},
+                {{1, 2, 3}, {4, 0, 5}, {7, 8, 6}},
+                {{1, 2, 3}, {4, 5, 0}, {7, 8, 6}},
+                {{1, 2, 3}, {4, 5, 6}, {7, 8, 0}},
+        };
 
-        int[][] v1 = {{0, 1, 3}, {4, 2, 5}, {7, 8, 6}};
-        Board b1 = new Board(v1);
+        BFSSolver bfsSolver = new BFSSolver(new SearchNode(new Board(tiles[0]), null, 0), new Board(sol));
 
-        BFSSolver bfsSolver = new BFSSolver(new SearchNode(b1, null, 0), solution);
+        for (int i = 0; i < tiles.length; i++) {
+            bfsSolver.step();
+            Board b = new Board(tiles[i]);
+            assertTrue(b.equals(bfsSolver.getSolution().get(i)));
+        }
+    }
 
-        assertFalse(bfsSolver.step());
-
-        ArrayList<Board> moves = bfsSolver.getSolution();
-        assertTrue(b1.equals(moves.get(0)));
-
-        int[][] v2 = {{1, 0, 3}, {4, 2, 5}, {7, 8, 6}};
-        Board b2 = new Board(v2);
-        assertFalse(bfsSolver.step());
-        moves = bfsSolver.getSolution();
-        assertTrue(b2.equals(moves.get(1)));
-
-        int[][] v3 = {{1, 2, 3}, {4, 0, 5}, {7, 8, 6}};
-        Board b3 = new Board(v3);
-        assertFalse(bfsSolver.step());
-        moves = bfsSolver.getSolution();
-        assertTrue(b3.equals(moves.get(2)));
+    @Test
+    public void testUnsolvableBoard() {
+        int[][] tiles = {{1, 2, 3}, {4, 5, 6}, {8, 7, 0}};
+        Solver solver = new Solver(new Board(tiles));
+        assertFalse(solver.isSolvable());
     }
 
 }

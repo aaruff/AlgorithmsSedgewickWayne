@@ -8,16 +8,14 @@ import java.util.Arrays;
  */
 public class Board {
     private int[][] tiles;
-    private int[][] twin;
-    private int hamming;
-    private int manhattan;
-    private boolean isGoal;
-    private ArrayList<Neighbor> neighbors;
-    private ArrayList<Board> neighboringBoards;
+    private Board twinBoard;
+    private ArrayList<Board> neighbors;
     private int pivotRow;
     private int pivotColumn;
-
+    private int hamming;
+    private int manhattan;
     private int n;
+
     public Board(int[][] tiles) {
         if (tiles == null) {
             throw new NullPointerException();
@@ -25,23 +23,12 @@ public class Board {
 
         n = tiles.length;
         this.tiles = new int[n][n];
-        this.twin = new int[n][n];
-
-
-        int[][] swap = new int[2][2];
-        for (int i = 0, k = 0; i < n; ++i) {
+        for (int i = 0; i < n; ++i) {
           for (int j = 0; j < n; ++j) {
               this.tiles[i][j] = tiles[i][j];
-              this.twin[i][j] = tiles[i][j];
               int solution = i * n + (j + 1);
               if (tiles[i][j] != 0) {
-                  // store swap indices for twin board
-                  if (k < 2) {
-                      swap[k][0] = i;
-                      swap[k][1] = j;
-                      ++k;
-                  }
-
+                  // calculate manhattan and hamming
                   if (tiles[i][j] != solution) {
                       int row = (tiles[i][j] - 1) / n;
                       int col = tiles[i][j] - 1 - (n * row);
@@ -49,18 +36,13 @@ public class Board {
                       ++hamming;
                   }
               }
+              // set blank tile
               else {
                   pivotRow  = i;
                   pivotColumn = j;
               }
           }
         }
-
-        // swap twin tiles
-        int tmp = twin[swap[0][0]][swap[0][1]];
-        twin[swap[0][0]][swap[0][1]] = twin[swap[1][0]][swap[1][1]];
-        twin[swap[1][0]][swap[1][1]] = tmp;
-
     }
 
     public int manhattan() {
@@ -76,41 +58,83 @@ public class Board {
     }
 
     public Board twin() {
-        return new Board(twin);
-    }
-
-    public Iterable<Board> neighbors()
-    {
-        if (neighboringBoards != null) {
-            return neighboringBoards;
+        if (twinBoard != null) {
+            return twinBoard;
         }
 
-        neighbors = new ArrayList<>();
-        int[][] direction = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-        for (int k = 0; k < direction.length; ++k) {
-            int newBlankRow = blankRow + direction[k][0];
-            int newBlankColumn = blankRow + direction[k][1];
-            if (newBlankRow >= 0 && newBlankRow < n && newBlankColumn >=0 && newBlankColumn < n) {
-                int[][] temp = new int[n][n];
-                for (int i = 0; i < n; ++i) {
-                    for (int j = 0; j < n; ++j) {
-                        if (i == newBlankRow && j == newBlankColumn ) {
-                            temp[i][j] = 0; // blank
-                        }
-                        else if (i == blankRow && j == blankColumn) {
-                            temp[i][j] = this.tiles[newBlankRow][newBlankColumn];
-                        }
-                        else {
-                            temp[i][j] = this.tiles[i][j];
-                        }
-                    }
+        int[][] copiedTiles = copyTiles(tiles);
+        int tileRow1 = -1;
+        int tileColumn1 = -1;
+        int tileRow2 = -1;
+        int tileColumn2 = -1;
+        int copied = 0;
+        for (int i = 0, l = n-1; i < n && copied < 2; i++, l--) {
+            for (int j = 0, m = n-1; j < n && copied < 2; j++, m--) {
+                if (copiedTiles[i][j] != 0 && tileRow1 < 0 && tileColumn1 < 0) {
+                    tileRow1 = i;
+                    tileColumn1 = j;
+                    ++copied;
                 }
-
-                neighbors.add(new Neighbor(temp));
+                if (copiedTiles[l][m] != 0 && tileRow2 < 0 && tileColumn2 < 0) {
+                    tileRow2 = l;
+                    tileColumn2 = m;
+                    ++copied;
+                }
             }
         }
 
-        return neighboringBoards;
+        swapTiles(copiedTiles, tileRow1, tileColumn1, tileRow2, tileColumn2);
+        twinBoard = new Board(copiedTiles);
+
+        return twinBoard;
+    }
+
+    private int[][] swapTiles(int[][] tiles, int row1, int col1, int row2, int col2) {
+        int tmp = tiles[row1][col1];
+        tiles[row1][col1] = tiles[row2][col2];
+        tiles[row2][col2] = tmp;
+
+        return tiles;
+    }
+
+    private int[][] copyTiles(int[][] tiles) {
+        int [][] copiedTiles = new int[tiles.length][];
+        for(int i = 0; i < tiles.length; i++)
+            copiedTiles[i] = tiles[i].clone();
+
+        return copiedTiles;
+    }
+
+
+    public Iterable<Board> neighbors()
+    {
+        if (neighbors != null) {
+            return neighbors;
+        }
+
+        neighbors = new ArrayList<>();
+        // top
+        if ((pivotRow - 1) >= 0 && (pivotRow - 1) < n) {
+            int upShift = pivotRow - 1;
+            neighbors.add(new Board(swapTiles(copyTiles(tiles), upShift, pivotColumn, pivotRow, pivotColumn)));
+        }
+        // Bottom
+        if ((pivotRow + 1) >= 0 && (pivotRow + 1) < n) {
+            int downShift = pivotRow + 1;
+            neighbors.add(new Board(swapTiles(copyTiles(tiles), downShift, pivotColumn, pivotRow, pivotColumn)));
+        }
+        // Left
+        if ((pivotColumn - 1) >= 0 && (pivotColumn - 1) < n) {
+            int leftShift = pivotColumn - 1;
+            neighbors.add(new Board(swapTiles(copyTiles(tiles), pivotRow, leftShift, pivotRow, pivotColumn)));
+        }
+        // Right
+        if ((pivotColumn + 1) >= 0 && (pivotColumn + 1) < n) {
+            int leftShift = pivotColumn + 1;
+            neighbors.add(new Board(swapTiles(copyTiles(tiles), pivotRow, leftShift, pivotRow, pivotColumn)));
+        }
+
+        return neighbors;
     }
 
     public int dimension() {
@@ -142,16 +166,5 @@ public class Board {
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(tiles);
-    }
-
-    private class Neighbor {
-        private int[][] boardTiles;
-        public Neighbor(int[][] boardTiles) {
-            this.boardTiles = boardTiles;
-        }
-
-        public Board getBoard() {
-            return new Board(boardTiles);
-        }
     }
 }
