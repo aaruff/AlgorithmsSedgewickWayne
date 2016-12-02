@@ -14,6 +14,8 @@ public class Board {
     private boolean isGoal;
     private ArrayList<Neighbor> neighbors;
     private ArrayList<Board> neighboringBoards;
+    private int pivotRow;
+    private int pivotColumn;
 
     private int n;
     public Board(int[][] tiles) {
@@ -26,8 +28,6 @@ public class Board {
         this.twin = new int[n][n];
 
 
-        int blankRow = 0;
-        int blankColumn = 0;
         int[][] swap = new int[2][2];
         for (int i = 0, k = 0; i < n; ++i) {
           for (int j = 0; j < n; ++j) {
@@ -50,8 +50,8 @@ public class Board {
                   }
               }
               else {
-                  blankRow = i;
-                  blankColumn = j;
+                  pivotRow  = i;
+                  pivotColumn = j;
               }
           }
         }
@@ -61,30 +61,6 @@ public class Board {
         twin[swap[0][0]][swap[0][1]] = twin[swap[1][0]][swap[1][1]];
         twin[swap[1][0]][swap[1][1]] = tmp;
 
-        neighbors = new ArrayList<>();
-        int[][] direction = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-        for (int k = 0; k < direction.length; ++k) {
-            int newBlankRow = blankRow + direction[k][0];
-            int newBlankColumn = blankRow + direction[k][1];
-            if (newBlankRow >= 0 && newBlankRow < n && newBlankColumn >=0 && newBlankColumn < n) {
-                int[][] temp = new int[n][n];
-                for (int i = 0; i < n; ++i) {
-                    for (int j = 0; j < n; ++j) {
-                        if (i == newBlankRow && j == newBlankColumn ) {
-                            temp[i][j] = 0; // blank
-                        }
-                        else if (i == blankRow && j == blankColumn) {
-                            temp[i][j] = this.tiles[newBlankRow][newBlankColumn];
-                        }
-                        else {
-                            temp[i][j] = this.tiles[i][j];
-                        }
-                    }
-                }
-
-                neighbors.add(new Neighbor(temp));
-            }
-        }
     }
 
     public int manhattan() {
@@ -109,9 +85,29 @@ public class Board {
             return neighboringBoards;
         }
 
-        neighboringBoards = new ArrayList<>();
-        for (Neighbor n : neighbors) {
-            neighboringBoards.add(n.getBoard());
+        neighbors = new ArrayList<>();
+        int[][] direction = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        for (int k = 0; k < direction.length; ++k) {
+            int newBlankRow = blankRow + direction[k][0];
+            int newBlankColumn = blankRow + direction[k][1];
+            if (newBlankRow >= 0 && newBlankRow < n && newBlankColumn >=0 && newBlankColumn < n) {
+                int[][] temp = new int[n][n];
+                for (int i = 0; i < n; ++i) {
+                    for (int j = 0; j < n; ++j) {
+                        if (i == newBlankRow && j == newBlankColumn ) {
+                            temp[i][j] = 0; // blank
+                        }
+                        else if (i == blankRow && j == blankColumn) {
+                            temp[i][j] = this.tiles[newBlankRow][newBlankColumn];
+                        }
+                        else {
+                            temp[i][j] = this.tiles[i][j];
+                        }
+                    }
+                }
+
+                neighbors.add(new Neighbor(temp));
+            }
         }
 
         return neighboringBoards;

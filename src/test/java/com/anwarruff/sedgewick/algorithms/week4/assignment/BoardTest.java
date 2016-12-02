@@ -2,8 +2,6 @@ package com.anwarruff.sedgewick.algorithms.week4.assignment;
 
 import org.junit.Test;
 
-import java.util.Iterator;
-
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 
@@ -162,17 +160,19 @@ public class BoardTest {
          * | 6 | 7 | 8 |
          * +---+---+---+
          */
-        int[][] v1 = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}};
+        int[][] v1 = {{1, 0, 3}, {4, 2, 5}, {7, 8, 6}};
         Board board = new Board(v1);
         Iterable<Board> iterable = board.neighbors();
 
-        int[][] v2 = {{3, 1, 2}, {0, 4, 5}, {6, 7, 8}};
+        int[][] v2 = {{0, 1, 3}, {4, 2, 5}, {7, 8, 6}};
         Board b2 = new Board(v2);
-        int[][] v3 = {{1, 0, 2}, {3, 4, 5}, {6, 7, 8}};
+        int[][] v3 = {{1, 3, 0}, {4, 2, 5}, {7, 8, 6}};
         Board b3 = new Board(v3);
+        int[][] v4 = {{1, 2, 3}, {4, 0, 5}, {7, 8, 6}};
+        Board b4 = new Board(v4);
 
         for (Board b : iterable) {
-            assertTrue(b.equals(b2) || b.equals(b3));
+            assertTrue(b.equals(b2) || b.equals(b3) || b.equals(b4));
         }
     }
 
