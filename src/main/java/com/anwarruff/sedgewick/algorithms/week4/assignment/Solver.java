@@ -1,4 +1,3 @@
-package com.anwarruff.sedgewick.algorithms.week4.assignment;
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
@@ -11,9 +10,9 @@ import java.util.ArrayList;
  * Created by aruff on 12/2/16.
  */
 public class Solver {
-    private ArrayList<SearchNode> closedSet;
-    private boolean solvable;
-    private int movesToSolve;
+    private Iterable<Board> solution;
+    private boolean solvable = false;
+    private int movesToSolve = -1;
 
     private class SearchNode implements Comparable<SearchNode> {
         private Board board;
@@ -47,24 +46,18 @@ public class Solver {
         }
     }
 
-    private class AStarSolver {
-        private ArrayList<SearchNode> closedSet = new ArrayList<>();
-        private MinPQ<SearchNode> minPQ = new MinPQ<>();
-        private boolean solved = false;
-        private boolean unsolvable = false;
-        private int movesToSolve = -1;
+    public Solver(Board board) {
+        ArrayList<SearchNode> closedSet = new ArrayList<>();
 
-        public AStarSolver(SearchNode searchNode) {
-            minPQ.insert(searchNode);
-        }
+        MinPQ<SearchNode> minPQ = new MinPQ<>();
+        boolean unsolvable = false;
 
-        public void step() {
-            if (unsolvable || solved) {
-                return;
-            }
+        minPQ.insert(new SearchNode(board));
+        minPQ.insert(new SearchNode(board.twin()));
+
+        while( !solvable && !unsolvable) {
             if (minPQ.isEmpty()) {
-                unsolvable = true;
-                return;
+                break;
             }
 
             SearchNode searchNode = minPQ.delMin();
@@ -73,58 +66,46 @@ public class Solver {
             closedSet.add(searchNode);
 
             if (searchNode.board.isGoal()) {
-                solved = true;
-                movesToSolve = searchNode.moves;
-                minPQ = null;
-
-            }
-            else {
+                if (isSearchNodeRootBoard(board, searchNode)) {
+                    solvable = true;
+                    movesToSolve = searchNode.moves;
+                    solution = getSolution(closedSet);
+                } else {
+                    unsolvable = true;
+                    solution = null;
+                }
+            } else {
                 for (Board child : searchNode.board.neighbors()) {
-                    if ( previous == null || ! previous.board.equals(child)) {
+                    if (previous == null || !previous.board.equals(child)) {
                         SearchNode neighbor = new SearchNode(child, searchNode);
                         minPQ.insert(neighbor);
                     }
                 }
             }
         }
+
     }
 
-    public Solver(Board board) {
-        AStarSolver solvableSolver = new AStarSolver(new SearchNode(board));
-        AStarSolver unsolvableSolver = new AStarSolver(new SearchNode(board.twin()));
-
-        solvable = false;
-        boolean unsolvable = false;
-        while( !solvable && !unsolvable) {
-
-            // solvable
-            solvableSolver.step();
-            if (solvableSolver.solved) {
-                this.solvable = true;
-                this.closedSet = solvableSolver.closedSet;
-                this.movesToSolve = solvableSolver.movesToSolve;
-            }
-            // unsolvable
-            unsolvableSolver.step();
-            if (unsolvableSolver.solved) {
-                unsolvable = true;
-                this.solvable = false;
-                this.movesToSolve = -1;
-            }
+    private boolean isSearchNodeRootBoard(Board rootBoard, SearchNode searchNode) {
+        SearchNode node = searchNode;
+        while (node.previous != null) {
+            node = node.previous;
         }
+
+        return node.board.equals(rootBoard);
     }
 
-    public Iterable<Board> solution() {
-        if ( ! solvable) {
-            return null;
-        }
-
+    private Iterable<Board> getSolution(ArrayList<SearchNode> closedSet) {
         Stack<Board> solution = new Stack<>();
         SearchNode searchNode = closedSet.get(closedSet.size() - 1);
         while (searchNode != null) {
             solution.push(searchNode.board);
             searchNode = searchNode.previous;
         }
+        return solution;
+    }
+
+    public Iterable<Board> solution() {
         return solution;
     }
 
