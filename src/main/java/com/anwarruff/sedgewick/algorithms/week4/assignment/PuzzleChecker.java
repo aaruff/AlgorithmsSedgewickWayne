@@ -2,7 +2,7 @@ package com.anwarruff.sedgewick.algorithms.week4.assignment;
 /******************************************************************************
  *  Compilation:  javac PuzzleChecker.java
  *  Execution:    java PuzzleChecker filename1.txt filename2.txt ...
- *  Dependencies: Board.java Solver.java
+ *  Dependencies: Board.java BoardSolver.java
  *
  *  This program creates an initial board from each filename specified
  *  on the command line and finds the minimum number of moves to
@@ -48,7 +48,7 @@ public class PuzzleChecker {
 
             // solve the slider puzzle
             //Board initial = new Board(tiles);
-            //Solver solver = new Solver(initial);
+            //BoardSolver solver = new BoardSolver(initial);
             //StdOut.println(filename + ": " + solver.moves());
         }
     }

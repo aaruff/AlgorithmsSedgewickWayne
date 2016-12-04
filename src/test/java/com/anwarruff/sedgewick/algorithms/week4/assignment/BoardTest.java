@@ -25,7 +25,7 @@ public class BoardTest {
     @Test
     public void testManhattan() {
         /*
-         *   Solution
+         *   BoardTest
          * +---+---+---+
          * | 1 | 2 | 3 |
          * +---+---+---+
@@ -62,7 +62,7 @@ public class BoardTest {
     @Test
     public void testHamming() {
         /*
-         *   Solution
+         *   BoardTest
          * +---+---+---+
          * | 1 | 2 | 3 |
          * +---+---+---+
@@ -102,7 +102,7 @@ public class BoardTest {
 
     @Test
     public void testIsGoal() {
-        int[][] v1 = {{8, 1, 3}, {4, 0, 2}, {7, 6, 5}};
+        int[][] v1 = {{1, 2, 3}, {4, 5, 6}, {7, 0, 8}};
         Board b1 = new Board(v1);
         assertFalse(b1.isGoal());
 
@@ -128,7 +128,8 @@ public class BoardTest {
     public void testTwin() {
         int[][] v1 = {{8, 1, 3}, {4, 0, 2}, {7, 6, 5}};
         Board board = new Board(v1);
-        assertFalse(board.equals(board.twin()));
+        Board twin = board.twin();
+        assertFalse(twin.toString(), board.equals(twin));
     }
 
     @Test
@@ -176,4 +177,248 @@ public class BoardTest {
         }
     }
 
+    @Test
+    public void testCenterNeighbors() {
+        /*
+         *  Board
+         * +---+---+---+
+         * | 1 | 2 | 3 |
+         * +---+---+---+
+         * | 7 | 0 | 6 |
+         * +---+---+---+
+         * | 5 | 4 | 8 |
+         * +---+---+---+
+         */
+        int[][] v1 = {{1, 2, 3}, {7, 0, 6}, {5, 4, 8}};
+        int[][][] results = {
+                {{1, 0, 3}, {7, 2, 6}, {5, 4, 8}},
+                {{1, 2, 3}, {7, 4, 6}, {5, 0, 8}},
+                {{1, 2, 3}, {0, 7, 6}, {5, 4, 8}},
+                {{1, 2, 3}, {7, 6, 0}, {5, 4, 8}},
+        };
+        Board board = new Board(v1);
+        Iterable<Board> neighbors = board.neighbors();
+        int i = 0;
+        for (Board neighbor : neighbors) {
+            Board expected = new Board(results[i]);
+            assertTrue("expected: " + expected, neighbor.equals(expected));
+            ++i;
+        }
+    }
+
+    @Test
+    public void testMiddleRightNeighbors() {
+        /*
+         *  Board
+         * +---+---+---+
+         * | 1 | 2 | 3 |
+         * +---+---+---+
+         * | 7 | 6 | 0 |
+         * +---+---+---+
+         * | 5 | 4 | 8 |
+         * +---+---+---+
+         */
+        int[][] v1 = {{1, 2, 3}, {7, 6, 0}, {5, 4, 8}};
+        int[][][] results = {
+                {{1, 2, 0}, {7, 6, 3}, {5, 4, 8}},
+                {{1, 2, 3}, {7, 6, 8}, {5, 4, 0}},
+                {{1, 2, 3}, {7, 0, 6}, {5, 4, 8}},
+        };
+        Board board = new Board(v1);
+        Iterable<Board> neighbors = board.neighbors();
+        int i = 0;
+        for (Board neighbor : neighbors) {
+            Board expected = new Board(results[i]);
+            assertTrue("expected: " + expected, neighbor.equals(expected));
+            ++i;
+        }
+    }
+
+    @Test
+    public void testMiddleLeftNeighbors() {
+        /*
+         *  Board
+         * +---+---+---+
+         * | 1 | 2 | 3 |
+         * +---+---+---+
+         * | 0 | 7 | 6 |
+         * +---+---+---+
+         * | 5 | 4 | 8 |
+         * +---+---+---+
+         */
+        int[][] v1 = {{1, 2, 3}, {0, 7, 6}, {5, 4, 8}};
+        int[][][] results = {
+                {{0, 2, 3}, {1, 7, 6}, {5, 4, 8}},
+                {{1, 2, 3}, {5, 7, 6}, {0, 4, 8}},
+                {{1, 2, 3}, {7, 0, 6}, {5, 4, 8}},
+        };
+        Board board = new Board(v1);
+        Iterable<Board> neighbors = board.neighbors();
+        int i = 0;
+        for (Board neighbor : neighbors) {
+            Board expected = new Board(results[i]);
+            assertTrue("expected: " + expected, neighbor.equals(expected));
+            ++i;
+        }
+    }
+
+    @Test
+    public void testTopLeftNeighbors() {
+        /*
+         *  Board
+         * +---+---+---+
+         * | 0 | 2 | 3 |
+         * +---+---+---+
+         * | 1 | 7 | 6 |
+         * +---+---+---+
+         * | 5 | 4 | 8 |
+         * +---+---+---+
+         */
+        int[][] v1 = {{0, 2, 3}, {1, 7, 6}, {5, 4, 8}};
+        int[][][] results = {
+                {{1, 2, 3}, {0, 7, 6}, {5, 4, 8}},
+                {{2, 0, 3}, {1, 7, 6}, {5, 4, 8}},
+        };
+        Board board = new Board(v1);
+        Iterable<Board> neighbors = board.neighbors();
+        int i = 0;
+        for (Board neighbor : neighbors) {
+            Board expected = new Board(results[i]);
+            assertTrue("expected: " + expected, neighbor.equals(expected));
+            ++i;
+        }
+    }
+
+    @Test
+    public void testTopMiddleNeighbors() {
+        /*
+         *  Board
+         * +---+---+---+
+         * | 2 | 0 | 3 |
+         * +---+---+---+
+         * | 1 | 7 | 6 |
+         * +---+---+---+
+         * | 5 | 4 | 8 |
+         * +---+---+---+
+         */
+        int[][] v1 = {{2, 0, 3}, {1, 7, 6}, {5, 4, 8}};
+        int[][][] results = {
+                {{2, 7, 3}, {1, 0, 6}, {5, 4, 8}},
+                {{0, 2, 3}, {1, 7, 6}, {5, 4, 8}},
+                {{2, 3, 0}, {1, 7, 6}, {5, 4, 8}},
+        };
+        Board board = new Board(v1);
+        Iterable<Board> neighbors = board.neighbors();
+        int i = 0;
+        for (Board neighbor : neighbors) {
+            Board expected = new Board(results[i]);
+            assertTrue("expected: " + expected, neighbor.equals(expected));
+            ++i;
+        }
+    }
+    @Test
+    public void testTopRightNeighbors() {
+        /*
+         *  Board
+         * +---+---+---+
+         * | 2 | 3 | 0 |
+         * +---+---+---+
+         * | 1 | 7 | 6 |
+         * +---+---+---+
+         * | 5 | 4 | 8 |
+         * +---+---+---+
+         */
+        int[][] v1 = {{2, 3, 0}, {1, 7, 6}, {5, 4, 8}};
+        int[][][] results = {
+                {{2, 3, 6}, {1, 7, 0}, {5, 4, 8}},
+                {{2, 0, 3}, {1, 7, 6}, {5, 4, 8}},
+        };
+        Board board = new Board(v1);
+        Iterable<Board> neighbors = board.neighbors();
+        int i = 0;
+        for (Board neighbor : neighbors) {
+            Board expected = new Board(results[i]);
+            assertTrue("expected: " + expected, neighbor.equals(expected));
+            ++i;
+        }
+    }
+    @Test
+    public void testBottomLeftNeighbors() {
+        /*
+         *  Board
+         * +---+---+---+
+         * | 1 | 2 | 3 |
+         * +---+---+---+
+         * | 5 | 7 | 6 |
+         * +---+---+---+
+         * | 0 | 4 | 8 |
+         * +---+---+---+
+         */
+        int[][] v1 = {{1, 2, 3}, {5, 7, 6}, {0, 4, 8}};
+        int[][][] results = {
+                {{1, 2, 3}, {0, 7, 6}, {5, 4, 8}},
+                {{1, 2, 3}, {5, 7, 6}, {4, 0, 8}},
+        };
+        Board board = new Board(v1);
+        Iterable<Board> neighbors = board.neighbors();
+        int i = 0;
+        for (Board neighbor : neighbors) {
+            Board expected = new Board(results[i]);
+            assertTrue("expected: " + expected, neighbor.equals(expected));
+            ++i;
+        }
+    }
+    @Test
+    public void testBottomMiddleNeighbors() {
+        /*
+         *  Board
+         * +---+---+---+
+         * | 1 | 2 | 3 |
+         * +---+---+---+
+         * | 5 | 7 | 6 |
+         * +---+---+---+
+         * | 4 | 0 | 8 |
+         * +---+---+---+
+         */
+        int[][] v1 = {{1, 2, 3}, {5, 7, 6}, {4, 0, 8}};
+        int[][][] results = {
+                {{1, 2, 3}, {5, 0, 6}, {4, 7, 8}},
+                {{1, 2, 3}, {5, 7, 6}, {0, 4, 8}},
+                {{1, 2, 3}, {5, 7, 6}, {4, 8, 0}},
+        };
+        Board board = new Board(v1);
+        Iterable<Board> neighbors = board.neighbors();
+        int i = 0;
+        for (Board neighbor : neighbors) {
+            Board expected = new Board(results[i]);
+            assertTrue("expected: " + expected, neighbor.equals(expected));
+            ++i;
+        }
+    }
+    @Test
+    public void testBottomRightNeighbors() {
+        /*
+         *  Board
+         * +---+---+---+
+         * | 1 | 2 | 3 |
+         * +---+---+---+
+         * | 5 | 7 | 6 |
+         * +---+---+---+
+         * | 4 | 8 | 0 |
+         * +---+---+---+
+         */
+        int[][] v1 = {{1, 2, 3}, {5, 7, 6}, {4, 8, 0}};
+        int[][][] results = {
+                {{1, 2, 3}, {5, 7, 0}, {4, 8, 6}},
+                {{1, 2, 3}, {5, 7, 6}, {4, 0, 8}},
+        };
+        Board board = new Board(v1);
+        Iterable<Board> neighbors = board.neighbors();
+        int i = 0;
+        for (Board neighbor : neighbors) {
+            Board expected = new Board(results[i]);
+            assertTrue("expected: " + expected, neighbor.equals(expected));
+            ++i;
+        }
+    }
 }

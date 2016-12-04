@@ -1,19 +1,12 @@
 package com.anwarruff.sedgewick.algorithms.week4.assignment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by aruff on 11/28/16.
  */
 public class Board {
     private int[][] tiles;
-    private Board twinBoard;
-    private ArrayList<Board> neighbors;
-    private int pivotRow;
-    private int pivotColumn;
-    private int hamming;
-    private int manhattan;
     private int n;
 
     public Board(int[][] tiles) {
@@ -22,77 +15,69 @@ public class Board {
         }
 
         n = tiles.length;
-        this.tiles = new int[n][n];
-        for (int i = 0; i < n; ++i) {
-          for (int j = 0; j < n; ++j) {
-              this.tiles[i][j] = tiles[i][j];
-              int solution = i * n + (j + 1);
-              if (tiles[i][j] != 0) {
-                  // calculate manhattan and hamming
-                  if (tiles[i][j] != solution) {
-                      int row = (tiles[i][j] - 1) / n;
-                      int col = tiles[i][j] - 1 - (n * row);
-                      manhattan += Math.abs(row - i) + Math.abs(col - j);
-                      ++hamming;
-                  }
-              }
-              // set blank tile
-              else {
-                  pivotRow  = i;
-                  pivotColumn = j;
-              }
-          }
-        }
+        this.tiles = copyTiles(tiles);
     }
 
     public int manhattan() {
-        return manhattan;
-    }
-
-    public int hamming() {
-        return hamming;
-    }
-
-    public boolean isGoal() {
-        return manhattan == 0;
-    }
-
-    public Board twin() {
-        if (twinBoard != null) {
-            return twinBoard;
-        }
-
-        int[][] copiedTiles = copyTiles(tiles);
-        int tileRow1 = -1;
-        int tileColumn1 = -1;
-        int tileRow2 = -1;
-        int tileColumn2 = -1;
-        int copied = 0;
-        for (int i = 0, l = n-1; i < n && copied < 2; i++, l--) {
-            for (int j = 0, m = n-1; j < n && copied < 2; j++, m--) {
-                if (copiedTiles[i][j] != 0 && tileRow1 < 0 && tileColumn1 < 0) {
-                    tileRow1 = i;
-                    tileColumn1 = j;
-                    ++copied;
-                }
-                if (copiedTiles[l][m] != 0 && tileRow2 < 0 && tileColumn2 < 0) {
-                    tileRow2 = l;
-                    tileColumn2 = m;
-                    ++copied;
+        int man = 0;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (tiles[i][j] != 0) {
+                    int row = (tiles[i][j] - 1) / n;
+                    int col = (tiles[i][j] - 1) % n;
+                    man += Math.abs(row - i) + Math.abs(col - j);
                 }
             }
         }
 
-        swapTiles(copiedTiles, tileRow1, tileColumn1, tileRow2, tileColumn2);
-        twinBoard = new Board(copiedTiles);
-
-        return twinBoard;
+        return man;
     }
 
-    private int[][] swapTiles(int[][] tiles, int row1, int col1, int row2, int col2) {
-        int tmp = tiles[row1][col1];
-        tiles[row1][col1] = tiles[row2][col2];
-        tiles[row2][col2] = tmp;
+    public int hamming() {
+        int hamming = 0;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                int solution = i * n + (j + 1);
+                if (tiles[i][j] != solution && tiles[i][j] != 0) {
+                    ++hamming;
+                }
+            }
+        }
+
+        return hamming;
+    }
+
+    public boolean isGoal() {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                int solution = i * n + (j + 1);
+                if (tiles[i][j] != solution && (i != (n-1) || j != (n-1))) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public Board twin() {
+        int[][] copiedTiles = copyTiles(tiles);
+        for (int i = 0, l = n-1 ; i < n; i++, l--) {
+            for (int j = 0, m = n-1; j < n; j++, m--) {
+                if (copiedTiles[i][j] != 0 && copiedTiles[l][m] != 0) {
+                    swapTiles(copiedTiles, i, j, l, m);
+                    return new Board(copiedTiles);
+                }
+            }
+        }
+
+        return new Board(copiedTiles);
+    }
+
+    private int[][] swapTiles(int[][] tiles, int i, int j, int l, int m) {
+        int tmp = tiles[i][j];
+        tiles[i][j] = tiles[l][m];
+        tiles[l][m] = tmp;
 
         return tiles;
     }
@@ -108,30 +93,31 @@ public class Board {
 
     public Iterable<Board> neighbors()
     {
-        if (neighbors != null) {
-            return neighbors;
-        }
+        ArrayList<Board> neighbors = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+               if (tiles[i][j] == 0)  {
+                   // up
+                   if (i > 0) {
+                       neighbors.add(new Board(swapTiles(copyTiles(tiles), i - 1, j, i, j)));
+                   }
+                   // Bottom
+                   if (i < n - 1) {
+                       neighbors.add(new Board(swapTiles(copyTiles(tiles), i + 1, j, i, j)));
+                   }
+                   // Left
+                   if (j > 0) {
+                       neighbors.add(new Board(swapTiles(copyTiles(tiles), i, j - 1, i, j)));
+                   }
+                   // Right
+                   if (j < n - 1) {
+                       neighbors.add(new Board(swapTiles(copyTiles(tiles), i, j + 1, i, j)));
+                   }
 
-        neighbors = new ArrayList<>();
-        // top
-        if ((pivotRow - 1) >= 0 && (pivotRow - 1) < n) {
-            int upShift = pivotRow - 1;
-            neighbors.add(new Board(swapTiles(copyTiles(tiles), upShift, pivotColumn, pivotRow, pivotColumn)));
-        }
-        // Bottom
-        if ((pivotRow + 1) >= 0 && (pivotRow + 1) < n) {
-            int downShift = pivotRow + 1;
-            neighbors.add(new Board(swapTiles(copyTiles(tiles), downShift, pivotColumn, pivotRow, pivotColumn)));
-        }
-        // Left
-        if ((pivotColumn - 1) >= 0 && (pivotColumn - 1) < n) {
-            int leftShift = pivotColumn - 1;
-            neighbors.add(new Board(swapTiles(copyTiles(tiles), pivotRow, leftShift, pivotRow, pivotColumn)));
-        }
-        // Right
-        if ((pivotColumn + 1) >= 0 && (pivotColumn + 1) < n) {
-            int leftShift = pivotColumn + 1;
-            neighbors.add(new Board(swapTiles(copyTiles(tiles), pivotRow, leftShift, pivotRow, pivotColumn)));
+                   return neighbors;
+
+               }
+            }
         }
 
         return neighbors;
@@ -160,11 +146,19 @@ public class Board {
 
         Board board = (Board) o;
 
-        return Arrays.deepEquals(tiles, board.tiles);
-    }
+        if (board.tiles.length != n) {
+            return false;
+        }
 
-    @Override
-    public int hashCode() {
-        return Arrays.deepHashCode(tiles);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (tiles[i][j] != board.tiles[i][j]) {
+                    return false;
+                }
+
+            }
+        }
+
+        return true;
     }
 }

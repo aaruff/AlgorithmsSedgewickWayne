@@ -2,111 +2,140 @@ package com.anwarruff.sedgewick.algorithms.week4.assignment;
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
+import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdOut;
 
 import java.util.ArrayList;
 
 /**
- * Created by aruff on 11/28/16.
+ * Created by aruff on 12/2/16.
  */
 public class Solver {
-    private Iterable<Board> solution;
+    private ArrayList<SearchNode> closedSet;
     private boolean solvable;
-    private int moves;
+    private int movesToSolve;
 
-    public Solver(Board board) {
-        int n = board.dimension();
-        int[][] tiles = new int[n][n];
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
-                tiles[i][j] = ((i * n) + j + 1) % (n*n);
+    private class SearchNode implements Comparable<SearchNode> {
+        private Board board;
+        private SearchNode previous;
+        private int moves;
+        private int manhattan;
+
+        public SearchNode(Board board) {
+            this.board = board;
+            this.moves = 0;
+            this.manhattan = board.manhattan();
+        }
+
+
+        public SearchNode(Board board, SearchNode previous) {
+            this.board = board;
+            this.previous = previous;
+            this.moves = previous.moves + 1;
+            this.manhattan = board.manhattan();
+        }
+
+        @Override
+        public int compareTo(SearchNode s) {
+            if ((manhattan + moves) > (s.manhattan + s.moves)) {
+                return 1;
+            } else if ((manhattan + moves) < (s.manhattan + s.moves)) {
+                return -1;
+            } else {
+                return 0;
             }
         }
-        Board solution = new Board(tiles);
-        PrivateSolver solvableSolver = new PrivateSolver(new PrivateSearchNode(board, null, 0), solution);
-        PrivateSolver unsolvableSolver = new PrivateSolver(new PrivateSearchNode(board.twin(), null, 0), solution);
+    }
+
+    private class AStarSolver {
+        private ArrayList<SearchNode> closedSet = new ArrayList<>();
+        private MinPQ<SearchNode> minPQ = new MinPQ<>();
+        private boolean solved = false;
+        private boolean unsolvable = false;
+        private int movesToSolve = -1;
+
+        public AStarSolver(SearchNode searchNode) {
+            minPQ.insert(searchNode);
+        }
+
+        public void step() {
+            if (unsolvable || solved) {
+                return;
+            }
+            if (minPQ.isEmpty()) {
+                unsolvable = true;
+                return;
+            }
+
+            SearchNode searchNode = minPQ.delMin();
+            SearchNode previous = searchNode.previous;
+
+            closedSet.add(searchNode);
+
+            if (searchNode.board.isGoal()) {
+                solved = true;
+                movesToSolve = searchNode.moves;
+                minPQ = null;
+
+            }
+            else {
+                for (Board child : searchNode.board.neighbors()) {
+                    if ( previous == null || ! previous.board.equals(child)) {
+                        SearchNode neighbor = new SearchNode(child, searchNode);
+                        minPQ.insert(neighbor);
+                    }
+                }
+            }
+        }
+    }
+
+    public Solver(Board board) {
+        AStarSolver solvableSolver = new AStarSolver(new SearchNode(board));
+        AStarSolver unsolvableSolver = new AStarSolver(new SearchNode(board.twin()));
 
         solvable = false;
         boolean unsolvable = false;
         while( !solvable && !unsolvable) {
 
             // solvable
-            if (solvableSolver.step()) {
+            solvableSolver.step();
+            if (solvableSolver.solved) {
                 this.solvable = true;
-                this.solution = solvableSolver.getSolution();
-                this.moves = solvableSolver.getNumMoves();
+                this.closedSet = solvableSolver.closedSet;
+                this.movesToSolve = solvableSolver.movesToSolve;
             }
             // unsolvable
-            else if (unsolvableSolver.step()) {
-                this.solvable = false;
+            unsolvableSolver.step();
+            if (unsolvableSolver.solved) {
                 unsolvable = true;
-                this.moves = -1;
+                this.solvable = false;
+                this.movesToSolve = -1;
             }
         }
     }
 
     public Iterable<Board> solution() {
-        if (solvable) {
-            return solution;
+        if ( ! solvable) {
+            return null;
         }
-        else {
-            return new ArrayList<>();
+
+        Stack<Board> solution = new Stack<>();
+        SearchNode searchNode = closedSet.get(closedSet.size() - 1);
+        while (searchNode != null) {
+            solution.push(searchNode.board);
+            searchNode = searchNode.previous;
         }
+        return solution;
     }
 
     public int moves() {
-        return moves;
+        return movesToSolve;
     }
 
     public boolean isSolvable() {
         return solvable;
     }
 
-    private class PrivateSolver {
-        private ArrayList<Board> moves = new ArrayList<>();
-        private MinPQ<PrivateSearchNode> minPQ = new MinPQ<>();
-        private boolean solved = false;
-
-        private Board solution;
-
-        public PrivateSolver(PrivateSearchNode privateSearchNode, Board solution) {
-            this.solution = solution;
-            minPQ.insert(privateSearchNode);
-        }
-
-        public boolean step() {
-            if (solved) {
-                return solved;
-            }
-
-            PrivateSearchNode privateSearchNode = minPQ.delMin();
-            PrivateSearchNode previous = privateSearchNode.getPrevious();
-
-            moves.add(privateSearchNode.getBoard());
-
-            if (privateSearchNode.isBoardEqual(solution)) {
-                solved = true;
-                return solved;
-            }
-            else {
-                for (Board neighbor : privateSearchNode.getNeighbors()) {
-                    if ( previous == null || ! previous.isBoardEqual(neighbor)) {
-                        minPQ.insert(new PrivateSearchNode(neighbor, privateSearchNode, moves.size()));
-                    }
-                }
-
-                return solved;
-            }
-        }
-
-        public ArrayList<Board> getSolution() {
-            return moves;
-        }
-
-        public int getNumMoves() {
-            return (moves.size() == 0) ? -1 : moves.size() - 1;
-        }
-    }
 
     public static void main(String[] args) {
         // create initial board from file
@@ -119,62 +148,16 @@ public class Solver {
         Board initial = new Board(blocks);
 
         // solve the puzzle
-        Solver solver = new Solver(initial);
+        Solver boardSolver = new Solver(initial);
 
-        // print solution to standard output
-        if (!solver.isSolvable())
-            StdOut.println("No solution possible");
+        // print closedSet to standard output
+        if (!boardSolver.isSolvable())
+            StdOut.println("No closedSet possible");
         else {
-            StdOut.println("Minimum number of moves = " + solver.moves());
-            for (Board board : solver.solution())
+            StdOut.println("Minimum number of closedSet = " + boardSolver.moves());
+            for (Board board : boardSolver.solution())
                 StdOut.println(board);
         }
     }
-
-    private class PrivateSearchNode implements Comparable<PrivateSearchNode> {
-        private Board board;
-        private int priority;
-        private PrivateSearchNode previous;
-
-
-        public PrivateSearchNode(Board board, PrivateSearchNode previous, int moves) {
-            this.board = board;
-            this.priority = board.hamming() + moves;
-            this.previous = previous;
-        }
-
-        public Board getBoard() {
-            return board;
-        }
-
-        public Iterable<Board> getNeighbors() {
-            return board.neighbors();
-        }
-
-        public int getPriority() {
-            return priority;
-        }
-
-        public boolean isBoardEqual(Board b) {
-            return board.equals(b);
-        }
-
-        public PrivateSearchNode getPrevious() {
-            return previous;
-        }
-
-        @Override
-        public int compareTo(PrivateSearchNode s) {
-            int LESS = -1;
-            int GREATER = 1;
-            int EQUAL = 0;
-            if (getPriority() > s.getPriority()) {
-                return GREATER;
-            } else if (getPriority() < s.getPriority()) {
-                return LESS;
-            } else {
-                return EQUAL;
-            }
-        }
-    }
 }
+
