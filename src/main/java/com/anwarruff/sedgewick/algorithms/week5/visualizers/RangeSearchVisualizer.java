@@ -1,4 +1,4 @@
-/******************************************************************************
+package com.anwarruff.sedgewick.algorithms.week5.visualizers; /******************************************************************************
  *  Compilation:  javac RangeSearchVisualizer.java
  *  Execution:    java RangeSearchVisualizer input.txt
  *  Dependencies: PointSET.java KdTree.java
@@ -12,6 +12,8 @@
  *
  ******************************************************************************/
 
+import com.anwarruff.sedgewick.algorithms.week5.KdTree;
+import com.anwarruff.sedgewick.algorithms.week5.PointSET;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
