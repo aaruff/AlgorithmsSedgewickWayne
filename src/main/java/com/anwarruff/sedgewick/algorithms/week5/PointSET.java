@@ -71,7 +71,7 @@ public class PointSET {
         Point2D closest = null;
         for (Point2D neighbor : set) {
             double calculatedDistance  = Math.sqrt(Math.pow(p.x()-neighbor.x(), 2) + Math.pow(p.y()-neighbor.y(), 2));
-            if (shortestDistance < calculatedDistance) {
+            if (shortestDistance == -1 || calculatedDistance < shortestDistance) {
                 shortestDistance = calculatedDistance;
                 closest = neighbor;
             }
