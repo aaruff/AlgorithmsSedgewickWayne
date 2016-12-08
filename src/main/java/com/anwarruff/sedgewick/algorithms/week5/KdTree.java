@@ -2,6 +2,9 @@ package com.anwarruff.sedgewick.algorithms.week5;
 
 import edu.princeton.cs.algs4.*;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * Created by aruff on 12/6/16.
  */
@@ -27,6 +30,37 @@ public class KdTree {
         }
     }
 
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+
+    public boolean contains(Point2D point) {
+        if (point == null) throw new IllegalArgumentException("argument to contains() is null");
+        return get(point) != null;
+    }
+
+    private RectHV get(Point2D point) {
+        return get(root, point, 0);
+    }
+
+    private RectHV get(Node parent, Point2D point, int level) {
+        if (parent == null) return null;
+
+        double parentCoordinate = (level%2 == 0) ? parent.point.x() : parent.point.y();
+        double pointCoordinate = (level%2 == 0) ? point.x() : point.y();
+
+        if (pointCoordinate < parentCoordinate) {
+            return get(parent.left, point, level + 1);
+        }
+        else if (pointCoordinate > parentCoordinate) {
+            return get(parent.right, point, level + 1);
+        }
+        else {
+            return parent.rectangle;
+        }
+    }
+
+
     // number of node in subtree rooted at x; 0 if x is null
     private int size(Node x) {
         if (x == null) return 0;
@@ -39,47 +73,75 @@ public class KdTree {
 
     public void insert(Point2D point) {
         if (point == null) throw new IllegalArgumentException("first argument to put() is null");
-        root = put(root, point, 0);
+        RectHV rectHV = new RectHV(0.0, 0.0, 1.0, 1.0);
+        root = put(root, point, rectHV, 0);
     }
 
-    private Node put(Node parent, Point2D point, int level) {
+    private Node put(Node parent, Point2D point, RectHV rectangle, int level) {
         if (parent == null) {
-            return new Node(point, new RectHV(0.0,0.0,0.0,0.0), null, null, level, 1);
+            int size = 1;
+            Node leftNode = null;
+            Node rightNode = null;
+            return new Node(point, rectangle, leftNode, rightNode, level, size);
+        }
+        boolean vertical = level%2 == 0;
+        double parentCoordinate = (vertical) ? parent.point.x() : parent.point.y();
+        double pointCoordinate = (vertical) ? point.x() : point.y();
+
+        // Either Left or Down
+        if (pointCoordinate < parentCoordinate) {
+            double xmin = rectangle.xmin();
+            double ymin = rectangle.ymin();
+            double xmax = (vertical) ? parentCoordinate : rectangle.xmax();
+            double ymax = (vertical) ? rectangle.ymax() : parentCoordinate;
+            parent.left  = put(parent.left,  point, new RectHV(xmin, ymin, xmax, ymax), level+1);
+        }
+        else if (pointCoordinate > parentCoordinate) {
+            double xmin = (vertical) ? parentCoordinate : rectangle.xmin();
+            double ymin = (vertical) ? rectangle.ymin() : parentCoordinate;
+            double xmax = rectangle.xmax();
+            double ymax = rectangle.ymax();
+            parent.right  = put(parent.right,  point, new RectHV(xmin, ymin, xmax, ymax), level+1);
+        }
+        else {
+            parent.rectangle = rectangle;
         }
 
-        double parentCoordinate = (level%2 == 0) ? parent.point.x() : parent.point.y();
-        double pointCoordinate = (level%2 == 0) ? point.x() : point.y();
-
-            if (pointCoordinate < parentCoordinate) {
-                parent.left  = put(parent.left,  point, level+1);
-            }
-            else if (pointCoordinate > parentCoordinate) {
-                parent.right  = put(parent.right,  point, level+1);
-            }
-            else {
-                parent.rectangle = new RectHV(0.0, 0.0, 0.0, 0.0);
-            }
-
-             parent.size = 1 + size(parent.left) + size(parent.right);
-            return parent;
+         parent.size = 1 + size(parent.left) + size(parent.right);
+        return parent;
     }
 
-    public Iterable<Point2D> levelOrder() {
-        Queue<Point2D> keys = new Queue<>();
+    public Iterable<Node> levelOrder() {
+        Queue<Node> keys = new Queue<>();
         Queue<Node> queue = new Queue<>();
         queue.enqueue(root);
         while (!queue.isEmpty()) {
-            Node x = queue.dequeue();
-            if (x == null) continue;
-            keys.enqueue(x.point);
-            queue.enqueue(x.left);
-            queue.enqueue(x.right);
+            Node node = queue.dequeue();
+            if (node == null) continue;
+            keys.enqueue(node);
+            queue.enqueue(node.left);
+            queue.enqueue(node.right);
         }
         return keys;
     }
 
     public void draw() {
-
+        for (Node n : levelOrder()) {
+            StdDraw.setPenRadius(0.01);
+            StdDraw.setPenColor(StdDraw.BLACK);
+            n.point.draw();
+            // vertical
+            if (n.level%2 == 0) {
+                StdDraw.setPenRadius(0.001);
+                StdDraw.setPenColor(StdDraw.RED);
+                StdDraw.line(n.point.x(), n.rectangle.ymin(), n.point.x(), n.rectangle.ymax());
+            }
+            else {
+                StdDraw.setPenRadius(0.001);
+                StdDraw.setPenColor(StdDraw.BLUE);
+                StdDraw.line(n.rectangle.xmin(), n.point.y(), n.rectangle.xmax(), n.point.y());
+            }
+        }
     }
 
     public KdTree nearest(Point2D query) {
@@ -87,6 +149,42 @@ public class KdTree {
     }
 
     public Point2D[] range(RectHV rect) {
-        return new Point2D[0];
+        if (rect == null) return null;
+
+        ArrayList<Point2D> intersection = new ArrayList<>();
+        range(root, rect, 0, intersection);
+        return intersection.toArray(new Point2D[intersection.size()]);
     }
+
+    private void range(Node node, RectHV searchRect, int level, ArrayList<Point2D> intersection) {
+        if (node == null) {
+            return;
+        }
+
+        boolean vertical = level%2 == 0;
+        double searchMax = (vertical) ? searchRect.xmax() : searchRect.ymax();
+        double searchMin = (vertical) ? searchRect.xmin() : searchRect.ymin();
+        double splitAxis = (vertical) ? node.point.x() : node.point.y();
+
+        // search rectangle contains current point
+        if (searchRect.contains(node.point)) {
+            intersection.add(node.point);
+            range(node.left, searchRect, level+1, intersection);
+            range(node.right, searchRect, level + 1, intersection);
+        }
+        // axis splits rectangle
+        else if (searchMin <= splitAxis && splitAxis <= searchMax) {
+            range(node.left, searchRect, level+1, intersection);
+            range(node.right, searchRect, level + 1, intersection);
+        }
+        // rectangle to the left or bottom of this point
+        else if (searchMax < splitAxis){
+            range(node.left, searchRect, level+1, intersection);
+        }
+        // rectangle to the above or right of this point
+        else {
+            range(node.right, searchRect, level + 1, intersection);
+        }
+    }
+
 }
