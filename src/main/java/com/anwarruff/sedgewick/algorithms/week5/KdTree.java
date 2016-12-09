@@ -87,6 +87,8 @@ public class KdTree {
         boolean vertical = level%2 == 0;
         double parentCoordinate = (vertical) ? parent.point.x() : parent.point.y();
         double pointCoordinate = (vertical) ? point.x() : point.y();
+        double pointOtherCoordinate = (! vertical) ? point.x() : point.y();
+        double parentOtherCoordinate = (! vertical) ? parent.point.x() : parent.point.y();
 
         // Either Left or Down
         if (pointCoordinate < parentCoordinate) {
@@ -97,6 +99,20 @@ public class KdTree {
             parent.left  = put(parent.left,  point, new RectHV(xmin, ymin, xmax, ymax), level+1);
         }
         else if (pointCoordinate > parentCoordinate) {
+            double xmin = (vertical) ? parentCoordinate : rectangle.xmin();
+            double ymin = (vertical) ? rectangle.ymin() : parentCoordinate;
+            double xmax = rectangle.xmax();
+            double ymax = rectangle.ymax();
+            parent.right  = put(parent.right,  point, new RectHV(xmin, ymin, xmax, ymax), level+1);
+        }
+        else if (pointOtherCoordinate < parentOtherCoordinate) {
+            double xmin = rectangle.xmin();
+            double ymin = rectangle.ymin();
+            double xmax = (vertical) ? parentCoordinate : rectangle.xmax();
+            double ymax = (vertical) ? rectangle.ymax() : parentCoordinate;
+            parent.left  = put(parent.left,  point, new RectHV(xmin, ymin, xmax, ymax), level+1);
+        }
+        else if (pointOtherCoordinate > parentOtherCoordinate) {
             double xmin = (vertical) ? parentCoordinate : rectangle.xmin();
             double ymin = (vertical) ? rectangle.ymin() : parentCoordinate;
             double xmax = rectangle.xmax();
@@ -144,9 +160,61 @@ public class KdTree {
         }
     }
 
-    public KdTree nearest(Point2D query) {
-        return null;
+    public Point2D nearest(Point2D queryPoint) {
+        if (queryPoint == null) return null;
+        return nearestPoint(root, queryPoint, null, 0);
     }
+
+    /**
+     * Goal: Find query point q
+     *
+     * @param node
+     * @param queryPoint
+     * @param oldChampion
+     * @param level
+     * @return
+     */
+    public Point2D nearestPoint(Node node, Point2D queryPoint, Point2D oldChampion, int level) {
+        if (node == null) {
+            return null;
+        }
+        double deltaX = queryPoint.x() - node.point.x();
+        double deltaY = queryPoint.y() - node.point.y();
+        double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+        deltaX = queryPoint.x() - oldChampion.x();
+        deltaY = queryPoint.y() - oldChampion.y();
+        double championDistance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+        Point2D newChampion;
+        // closest point found
+        if (distance == 0) {
+            return node.point;
+        }
+        // first observation, or closest so far observed
+        else if (oldChampion == null || distance < championDistance) {
+            newChampion = node.point;
+        }
+        // current observation point is not the closest
+        else {
+            newChampion = oldChampion;
+        }
+
+        // Left or Right?
+        boolean vertical = level%2 == 0;
+        double splitCoordinate = (vertical) ? node.point.x() : node.point.y();
+        double queryCoordinate = (vertical) ? queryPoint.x() : queryPoint.y();
+
+        if (queryCoordinate < splitCoordinate) {
+            nearestPoint(node.left,  queryPoint, newChampion, level+1);
+            nearestPoint(node.right,  queryPoint, newChampion, level+1);
+        }
+        else {
+            return newChampion;
+        }
+
+    }
+
 
     public Point2D[] range(RectHV rect) {
         if (rect == null) return null;

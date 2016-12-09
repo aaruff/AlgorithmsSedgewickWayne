@@ -1,6 +1,6 @@
 package com.anwarruff.sedgewick.algorithms.week5.visualizers; /******************************************************************************
- *  Compilation:  javac NearestNeighborVisualizer.java
- *  Execution:    java NearestNeighborVisualizer input.txt
+ *  Compilation:  javac NearestNeighborPointSETTreeVisualizer.java
+ *  Execution:    java NearestNeighborPointSETTreeVisualizer input.txt
  *  Dependencies: PointSET.java KdTree.java
  *
  *  Read points from a file (specified as a command-line argument) and
@@ -11,12 +11,13 @@ package com.anwarruff.sedgewick.algorithms.week5.visualizers; /*****************
  *
  ******************************************************************************/
 
+import com.anwarruff.sedgewick.algorithms.week5.KdTree;
 import com.anwarruff.sedgewick.algorithms.week5.PointSET;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.StdDraw;
 
-public class NearestNeighborVisualizer {
+public class NearestNeighborPointSETTreeVisualizer {
 
     public static void main(String[] args) {
         String filename = args[0];
@@ -26,17 +27,14 @@ public class NearestNeighborVisualizer {
 
         // initialize the two data structures with point from standard input
         PointSET brute = new PointSET();
-//        KdTree kdtree = new KdTree();
         while (!in.isEmpty()) {
             double x = in.readDouble();
             double y = in.readDouble();
             Point2D p = new Point2D(x, y);
-//            kdtree.insert(p);
             brute.insert(p);
         }
 
         while (true) {
-
             // the location (x, y) of the mouse
             double x = StdDraw.mouseX();
             double y = StdDraw.mouseY();
@@ -53,10 +51,6 @@ public class NearestNeighborVisualizer {
             StdDraw.setPenColor(StdDraw.RED);
             brute.nearest(query).draw();
             StdDraw.setPenRadius(0.02);
-
-            // draw in blue the nearest neighbor (using kd-tree algorithm)
-//            StdDraw.setPenColor(StdDraw.BLUE);
-//            kdtree.nearest(query).draw();
 
             StdDraw.show();
             StdDraw.pause(40);
