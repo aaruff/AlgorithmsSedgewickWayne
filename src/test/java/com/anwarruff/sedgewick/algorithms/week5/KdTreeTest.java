@@ -4,7 +4,7 @@ import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
 import org.junit.Test;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -116,9 +116,24 @@ public class KdTreeTest {
         for (int i = 0; i < points.length; ++i) {
             kdTree.insert(new Point2D(points[i][0], points[i][1]));
         }
-        Point2D[] intersection = kdTree.range(new RectHV(0.0, 0.1, 0.3, 0.8));
-        assertEquals(2, intersection.length);
-        assertEquals(new Point2D(0.2, 0.7), intersection[0]);
-        assertEquals(new Point2D(0.1, 0.2), intersection[1]);
+        Iterable<Point2D> intersection = kdTree.range(new RectHV(0.0, 0.1, 0.3, 0.8));
+        Iterator<Point2D> iterator = intersection.iterator();
+        assertEquals(new Point2D(0.2, 0.7), iterator.next());
+        assertEquals(new Point2D(0.1, 0.2), iterator.next());
+    }
+
+    @Test
+    public void testNearestNeighbor() {
+        KdTree kdTree = new KdTree();
+        double[][] points = {
+                {0.5, 0.5}, {0.7, 0.4}, {0.3, 0.7}, {0.2, 0.05}, {0.1, 0.6}, {0.6, 0.2}, {0.9, 0.9}, {0.8, 0.7}, {0.65, 0.1}
+        };
+        for (int i = 0; i < points.length; ++i) {
+            kdTree.insert(new Point2D(points[i][0], points[i][1]));
+        }
+
+        Point2D queryPoint = new Point2D(0.1, 0.8);
+        assertEquals(new Point2D(0.1, 0.6), kdTree.nearest(queryPoint));
+
     }
 }

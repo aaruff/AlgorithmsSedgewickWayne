@@ -46,7 +46,7 @@ public class PointSET {
     }
 
     // all points that are inside the rectangle
-    public Point2D[] range(RectHV rect) {
+    public Iterable<Point2D> range(RectHV rect) {
         if (rect == null)
             throw new NullPointerException();
 
@@ -59,7 +59,7 @@ public class PointSET {
             }
         }
 
-        return points.toArray(new Point2D[points.size()]);
+        return points;
     }
 
     // a nearest neighbor in the set to point p; null if the set is empty
