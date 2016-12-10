@@ -1,7 +1,9 @@
 package com.anwarruff.sedgewick.algorithms.week5;
 
+import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
+import edu.princeton.cs.algs4.StdDraw;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -135,5 +137,20 @@ public class KdTreeTest {
         Point2D queryPoint = new Point2D(0.1, 0.8);
         assertEquals(new Point2D(0.1, 0.6), kdTree.nearest(queryPoint));
 
+    }
+
+    @Test
+    public void testNearestNeighborSteps() {
+        In in = new In("/week5/circle10.txt");
+
+        KdTree kdtree = new KdTree();
+        while (!in.isEmpty()) {
+            double x = in.readDouble();
+            double y = in.readDouble();
+            Point2D p = new Point2D(x, y);
+            kdtree.insert(p);
+        }
+
+        kdtree.nearest(new Point2D(0.81, 0.30));
     }
 }

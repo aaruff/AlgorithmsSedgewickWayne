@@ -1,4 +1,3 @@
-package com.anwarruff.sedgewick.algorithms.week5;
 
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.Queue;
@@ -71,58 +70,59 @@ public class KdTree {
     }
 
     public void insert(Point2D point) {
-        if (point == null) throw new IllegalArgumentException("first argument to put() is null");
-        root = put(root, point, new RectHV(0.0, 0.0, 1.0, 1.0), 0);
+        if (point == null) throw new IllegalArgumentException("first argument to insertPoint() is null");
+        root = insertPoint(root, point, new RectHV(0.0, 0.0, 1.0, 1.0), 0);
     }
 
-    private Node put(Node current, Point2D insertPoint, RectHV currentRectangle, int level) {
-        if (current == null) {
-            int size = 1;
-            Node leftNode = null;
-            Node rightNode = null;
-            return new Node(insertPoint, currentRectangle, leftNode, rightNode, level, size);
+    private Node insertPoint(Node node, Point2D point, RectHV nodeRect, int level) {
+        if (node == null) {
+            return new Node(point, nodeRect, null, null, level, 1);
         }
-        boolean vertical = level%2 == 0;
-        double parentCoordinate = (vertical) ? current.point.x() : current.point.y();
-        double pointCoordinate = (vertical) ? insertPoint.x() : insertPoint.y();
-        double pointOtherCoordinate = (! vertical) ? insertPoint.x() : insertPoint.y();
-        double parentOtherCoordinate = (! vertical) ? current.point.x() : current.point.y();
 
-        // Either Left or Down
-        if (pointCoordinate < parentCoordinate) {
-            double xmin = currentRectangle.xmin();
-            double ymin = currentRectangle.ymin();
-            double xmax = (vertical) ? parentCoordinate : currentRectangle.xmax();
-            double ymax = (vertical) ? currentRectangle.ymax() : parentCoordinate;
-            current.left  = put(current.left,  insertPoint, new RectHV(xmin, ymin, xmax, ymax), level+1);
+        boolean xAxis = level%2 == 0;
+        boolean yAxis = ! xAxis;
+        double nodeAxis = (xAxis) ? node.point.x() : node.point.y();
+        double nodeAltAxis = (yAxis) ? node.point.x() : node.point.y();
+        double pointAxis = (xAxis) ? point.x() : point.y();
+        double pointAltAxis = (yAxis) ? point.x() : point.y();
+
+        double rxmin = nodeRect.xmin();
+        double rymin = nodeRect.ymin();
+        double rxmax = nodeRect.xmax();
+        double rymax = nodeRect.ymax();
+
+        // When the next node is to the left or down the (xmax,ymax) rectangle point changes
+        if (pointAxis < nodeAxis || (pointAxis == nodeAxis && pointAltAxis < nodeAltAxis)) {
+            double xmax, ymax;
+            if (xAxis) {
+                xmax = node.point.x();
+                ymax = node.rectangle.ymax();
+            }
+            else {
+                ymax = node.point.y();
+                xmax = node.rectangle.xmax();
+            }
+            node.left  = insertPoint(node.left,  point, new RectHV(rxmin, rymin, xmax, ymax), level+1);
         }
-        else if (pointCoordinate > parentCoordinate) {
-            double xmin = (vertical) ? parentCoordinate : currentRectangle.xmin();
-            double ymin = (vertical) ? currentRectangle.ymin() : parentCoordinate;
-            double xmax = currentRectangle.xmax();
-            double ymax = currentRectangle.ymax();
-            current.right  = put(current.right,  insertPoint, new RectHV(xmin, ymin, xmax, ymax), level+1);
-        }
-        else if (pointOtherCoordinate < parentOtherCoordinate) {
-            double xmin = currentRectangle.xmin();
-            double ymin = currentRectangle.ymin();
-            double xmax = (vertical) ? parentCoordinate : currentRectangle.xmax();
-            double ymax = (vertical) ? currentRectangle.ymax() : parentCoordinate;
-            current.left  = put(current.left,  insertPoint, new RectHV(xmin, ymin, xmax, ymax), level+1);
-        }
-        else if (pointOtherCoordinate > parentOtherCoordinate) {
-            double xmin = (vertical) ? parentCoordinate : currentRectangle.xmin();
-            double ymin = (vertical) ? currentRectangle.ymin() : parentCoordinate;
-            double xmax = currentRectangle.xmax();
-            double ymax = currentRectangle.ymax();
-            current.right  = put(current.right,  insertPoint, new RectHV(xmin, ymin, xmax, ymax), level+1);
+        // Right or Up
+        else if (pointAxis > nodeAxis || (pointAxis == nodeAxis && pointAltAxis > nodeAltAxis)) {
+            double xmin, ymin;
+            if (xAxis) {
+                xmin = node.point.x();
+                ymin = node.rectangle.ymin();
+            }
+            else {
+                ymin = node.point.y();
+                xmin = node.rectangle.xmin();
+            }
+            node.right  = insertPoint(node.right,  point, new RectHV(xmin, ymin, rxmax, rymax), level+1);
         }
         else {
-            current.rectangle = currentRectangle;
+            node.rectangle = nodeRect;
         }
 
-         current.size = 1 + size(current.left) + size(current.right);
-        return current;
+         node.size = 1 + size(node.left) + size(node.right);
+        return node;
     }
 
     private Iterable<Node> levelOrder() {
@@ -172,89 +172,59 @@ public class KdTree {
      * Goal: Find query point q
      *
      * @param node
-     * @param queryPoint
-     * @param oldChampion
+     * @param query
+     * @param oldNearest
      * @param level
      * @return
      */
-    private Node nearestPoint(Node node, Point2D queryPoint, Node oldChampion, int level) {
+    private Node nearestPoint(Node node, Point2D query, Node oldNearest, int level) {
         if (node == null) {
-            return oldChampion;
+            return oldNearest;
         }
 
-        double pointDistance = node.point.distanceSquaredTo(queryPoint);
-        double oldChampDistance = oldChampion.point.distanceSquaredTo(queryPoint);
-        double rectDistance = node.rectangle.distanceSquaredTo(queryPoint);
-        if (oldChampDistance < rectDistance) {
-            return oldChampion;
+        double nodeDistance = node.point.distanceSquaredTo(query);
+        double oldNearestDistance = oldNearest.point.distanceSquaredTo(query);
+        double rectDistance = node.rectangle.distanceSquaredTo(query);
+        if (oldNearestDistance < rectDistance) {
+            return oldNearest;
         }
 
-        Node champion = (pointDistance < oldChampDistance) ? node : oldChampion;
+        Node champion = (nodeDistance < oldNearestDistance) ? node : oldNearest;
 
         boolean splitX = level%2 == 0;
-        double queryX = queryPoint.x();
-        double queryY = queryPoint.x();
+        boolean splitY = ! splitX;
+        double queryX = query.x();
+        double queryY = query.y();
         double nodeX = node.point.x();
         double nodeY = node.point.y();
 
         Node firstDirection, secondDirection;
-        if (splitX) {
-            if (queryX < nodeX) {
-               firstDirection = node.left;
-               secondDirection = node.right;
-            }
-            else if (queryX > nodeX) {
-                firstDirection = node.right;
-                secondDirection = node.left;
-            }
-            else if (queryY < nodeY) {
-                firstDirection = node.left;
-                secondDirection = node.right;
-            }
-            else if (queryY > nodeY) {
-                firstDirection = node.right;
-                secondDirection = node.left;
-            }
-            else {
-                return champion;
-            }
+        if (splitX && (queryX < nodeX || (queryX == nodeX && queryY < nodeY))
+                || splitY && (queryY < nodeY || (queryY == nodeY && queryX < nodeX))) {
+           firstDirection = node.left;
+           secondDirection = node.right;
         }
-        // split Y
+        else if (splitX && (queryX > nodeX || (queryX == nodeX && queryY > nodeY))
+                || splitY && (queryY > nodeY || (queryY == nodeY && queryX > nodeX))) {
+            firstDirection = node.right;
+            secondDirection = node.left;
+        }
         else {
-            if (queryY < nodeY) {
-                firstDirection = node.left;
-                secondDirection = node.right;
-            }
-            else if (queryY > nodeY) {
-                firstDirection = node.right;
-                secondDirection = node.left;
-            }
-            else if (queryX < nodeX) {
-                firstDirection = node.left;
-                secondDirection = node.right;
-            }
-            else if (queryX > nodeX) {
-                firstDirection = node.right;
-                secondDirection = node.left;
-            }
-            else {
-                return champion;
-            }
-
+            return champion;
         }
 
-        champion = nearestPoint(secondDirection, queryPoint, champion, level + 1);
+        champion = nearestPoint(firstDirection, query, champion, level + 1);
 
 
         // If the champ point is closer than the nodes
         // query point and the rectangle corresponding to the node,
         // there is no need to explore that node, or it's sub tree
         // pruning rule
-        if (champion.point.distanceSquaredTo(queryPoint) < rectDistance) {
+        if (champion.point.distanceSquaredTo(query) < rectDistance) {
             return champion;
         }
         else {
-            return nearestPoint(firstDirection, queryPoint, champion, level + 1);
+            return nearestPoint(secondDirection, query, champion, level + 1);
         }
     }
 
