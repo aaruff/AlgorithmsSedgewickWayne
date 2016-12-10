@@ -1,5 +1,3 @@
-package com.anwarruff.sedgewick.algorithms.week5;
-
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.RectHV;
@@ -72,54 +70,51 @@ public class KdTree {
 
     public void insert(Point2D point) {
         if (point == null) throw new IllegalArgumentException("first argument to insertPoint() is null");
-        root = insertPoint(root, point, new RectHV(0.0, 0.0, 1.0, 1.0), 0);
+        root = insertPoint(root, point, 0.0, 0.0, 1.0, 1.0, 0);
     }
 
-    private Node insertPoint(Node node, Point2D point, RectHV nodeRect, int level) {
+    private Node insertPoint(Node node, Point2D point, double xmin, double ymin, double xmax, double ymax, int level) {
         if (node == null) {
-            return new Node(point, nodeRect, null, null, level, 1);
+            return new Node(point, new RectHV(xmin, ymin, xmax, ymax), null, null, level, 1);
         }
 
         boolean xAxis = level%2 == 0;
         boolean yAxis = ! xAxis;
-        double nodeAxis = (xAxis) ? node.point.x() : node.point.y();
-        double nodeAltAxis = (yAxis) ? node.point.x() : node.point.y();
-        double pointAxis = (xAxis) ? point.x() : point.y();
-        double pointAltAxis = (yAxis) ? point.x() : point.y();
-
-        double rxmin = nodeRect.xmin();
-        double rymin = nodeRect.ymin();
-        double rxmax = nodeRect.xmax();
-        double rymax = nodeRect.ymax();
+        double npx = node.point.x();
+        double npy = node.point.y();
+        double px = point.x();
+        double py = point.y();
+        double nodeAxis = (xAxis) ? npx : npy;
+        double nodeAltAxis = (yAxis) ? npx : npy;
+        double pointAxis = (xAxis) ? px : py;
+        double pointAltAxis = (yAxis) ? px : py;
 
         // When the next node is to the left or down the (xmax,ymax) rectangle point changes
         if (pointAxis < nodeAxis || (pointAxis == nodeAxis && pointAltAxis < nodeAltAxis)) {
-            double xmax, ymax;
             if (xAxis) {
-                xmax = node.point.x();
+                xmax = npx;
                 ymax = node.rectangle.ymax();
             }
             else {
-                ymax = node.point.y();
+                ymax = npy;
                 xmax = node.rectangle.xmax();
             }
-            node.left  = insertPoint(node.left,  point, new RectHV(rxmin, rymin, xmax, ymax), level+1);
+            node.left  = insertPoint(node.left, point, xmin, ymin, xmax, ymax, level+1);
         }
         // Right or Up
         else if (pointAxis > nodeAxis || (pointAxis == nodeAxis && pointAltAxis > nodeAltAxis)) {
-            double xmin, ymin;
             if (xAxis) {
-                xmin = node.point.x();
+                xmin = npx;
                 ymin = node.rectangle.ymin();
             }
             else {
-                ymin = node.point.y();
+                ymin = npy;
                 xmin = node.rectangle.xmin();
             }
-            node.right  = insertPoint(node.right,  point, new RectHV(xmin, ymin, rxmax, rymax), level+1);
+            node.right  = insertPoint(node.right,  point, xmin, ymin, xmax, ymax, level+1);
         }
         else {
-            node.rectangle = nodeRect;
+            node.rectangle = new RectHV(xmin, ymin, xmax, ymax);
         }
 
          node.size = 1 + size(node.left) + size(node.right);
