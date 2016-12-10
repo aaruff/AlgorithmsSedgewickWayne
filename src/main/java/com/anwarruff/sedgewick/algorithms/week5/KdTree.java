@@ -37,23 +37,23 @@ public class KdTree {
 
     public boolean contains(Point2D point) {
         if (point == null) throw new IllegalArgumentException("argument to contains() is null");
-        return get(point) != null;
-    }
-
-    private RectHV get(Point2D point) {
-        return get(root, point, 0);
+        return get(root, point, 0) != null;
     }
 
     private RectHV get(Node node, Point2D point, int level) {
         if (node == null) return null;
 
-        double parentCoordinate = (level%2 == 0) ? node.point.x() : node.point.y();
-        double pointCoordinate = (level%2 == 0) ? point.x() : point.y();
+        boolean xAxis = level%2 == 0;
+        boolean yAxis = ! xAxis;
+        double nodeAxis = (xAxis) ? node.point.x() : node.point.y();
+        double nodeAltAxis = (yAxis) ? node.point.x() : node.point.y();
+        double pointAxis = (xAxis) ? point.x() : point.y();
+        double pointAltAxis = (yAxis) ? point.x() : point.y();
 
-        if (pointCoordinate < parentCoordinate) {
+        if (pointAxis < nodeAxis || (pointAxis == nodeAxis && pointAltAxis < nodeAltAxis)) {
             return get(node.left, point, level + 1);
         }
-        else if (pointCoordinate > parentCoordinate) {
+        else if (pointAxis > nodeAxis || pointAxis == nodeAxis && pointAltAxis > nodeAltAxis) {
             return get(node.right, point, level + 1);
         }
         else {
