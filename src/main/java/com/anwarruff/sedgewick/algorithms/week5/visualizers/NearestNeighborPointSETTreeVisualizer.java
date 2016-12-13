@@ -1,4 +1,5 @@
-package com.anwarruff.sedgewick.algorithms.week5.visualizers; /******************************************************************************
+package com.anwarruff.sedgewick.algorithms.week5.visualizers;
+/******************************************************************************
  *  Compilation:  javac NearestNeighborPointSETTreeVisualizer.java
  *  Execution:    java NearestNeighborPointSETTreeVisualizer input.txt
  *  Dependencies: PointSET.java KdTree.java

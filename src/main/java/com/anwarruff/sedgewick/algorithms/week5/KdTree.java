@@ -1,3 +1,5 @@
+package com.anwarruff.sedgewick.algorithms.week5;
+
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.RectHV;
