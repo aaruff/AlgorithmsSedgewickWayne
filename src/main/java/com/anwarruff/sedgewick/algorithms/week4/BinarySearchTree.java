@@ -59,6 +59,24 @@ public class BinarySearchTree<Key extends Comparable<Key>, Value> {
         }
     }
 
+    public Value min() {
+        Node n = findMinValue(root);
+        if (n == null) return null;
+
+        return n.value;
+    }
+
+    private Node findMinValue(Node node) {
+        if (node == null) return null;
+
+        if (node.left != null) {
+            return findMinValue(node.left);
+        }
+        else {
+            return node;
+        }
+    }
+
     public void delete(Key key) {
 
     }

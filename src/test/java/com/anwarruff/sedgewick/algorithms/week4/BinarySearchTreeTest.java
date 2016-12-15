@@ -22,4 +22,15 @@ public class BinarySearchTreeTest {
         }
     }
 
+    @Test
+    public void testMin() {
+        String[] str = {"S", "E", "A", "R", "C", "H", "E", "X", "A", "M", "P", "L", "E"};
+        BinarySearchTree<String, Integer> bst = new BinarySearchTree<>();
+        for (Integer i = 0; i < str.length; i++) {
+            bst.put(str[i], i);
+        }
+
+        Integer val = 8;
+        assertEquals(val, bst.min());
+    }
 }
