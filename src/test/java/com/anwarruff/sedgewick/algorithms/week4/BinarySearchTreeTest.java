@@ -29,12 +29,15 @@ public class BinarySearchTreeTest {
     }
 
     @Test
-    public void testMinMax() {
-        Integer minVal = 8;
-        assertEquals(minVal, strIntBST.min());
+    public void testMin() {
+        String minKey = "A";
+        assertEquals(minKey, strIntBST.min());
+    }
 
-        Integer maxVal = 7;
-        assertEquals(maxVal, strIntBST.max());
+    @Test
+    public void testMax() {
+        String maxKey = "X";
+        assertEquals(maxKey, strIntBST.max());
     }
 
 }

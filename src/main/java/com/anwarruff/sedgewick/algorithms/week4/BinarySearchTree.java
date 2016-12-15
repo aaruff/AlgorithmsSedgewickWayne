@@ -1,6 +1,7 @@
 package com.anwarruff.sedgewick.algorithms.week4;
 
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 /**
  * Created by aruff on 12/12/16.
@@ -59,37 +60,27 @@ public class BinarySearchTree<Key extends Comparable<Key>, Value> {
         }
     }
 
-    public Value min() {
-        Node n = findMinValue(root);
+    public Key min() {
+        Predicate<Node> minTest = (n) -> n.left != null;
+        Node n = findBoundary(root, minTest);
         if (n == null) return null;
 
-        return n.value;
+        return n.key;
     }
 
-    private Node findMinValue(Node node) {
-        if (node == null) return null;
-
-        if (node.left != null) {
-            return findMinValue(node.left);
-        }
-        else {
-            return node;
-        }
-    }
-
-
-    public Value max() {
+    public Key max() {
         Node n = findMaxValue(root);
         if (n == null) return null;
 
-        return n.value;
+        return n.key;
     }
 
-    private Node findMaxValue(Node node) {
+
+    private Node findBoundary(Node node, Predicate<Node> boundary) {
         if (node == null) return null;
 
-        if (node.right != null) {
-            return findMinValue(node.right);
+        if (boundary.test(node)) {
+            return findBoundary(node.left, boundary);
         }
         else {
             return node;
