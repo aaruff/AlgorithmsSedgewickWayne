@@ -69,7 +69,8 @@ public class BinarySearchTree<Key extends Comparable<Key>, Value> {
     }
 
     public Key max() {
-        Node n = findMaxValue(root);
+        Predicate<Node> maxTest = (n) -> n.right != null;
+        Node n = findBoundary(root, maxTest);
         if (n == null) return null;
 
         return n.key;
