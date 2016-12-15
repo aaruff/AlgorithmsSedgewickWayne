@@ -77,6 +77,25 @@ public class BinarySearchTree<Key extends Comparable<Key>, Value> {
         }
     }
 
+
+    public Value max() {
+        Node n = findMaxValue(root);
+        if (n == null) return null;
+
+        return n.value;
+    }
+
+    private Node findMaxValue(Node node) {
+        if (node == null) return null;
+
+        if (node.right != null) {
+            return findMinValue(node.right);
+        }
+        else {
+            return node;
+        }
+    }
+
     public void delete(Key key) {
 
     }
