@@ -1,6 +1,7 @@
 package com.anwarruff.sedgewick.algorithms.week4;
 
 import java.util.Iterator;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -14,17 +15,18 @@ public class BinarySearchTree<Key extends Comparable<Key>, Value> {
     }
 
     private Node insertNode(Node node, Key key, Value value) {
-        // If the child is null, instantiate a new node with the key and value and pass it back to the parent
         if (node == null) {
-            return new Node(key, value);
+            return new Node(key, value, 1);
         }
 
         int compareResult = key.compareTo(node.key);
         if (compareResult < 0) {
             node.left = insertNode(node.left, key, value);
+            node.count = size(node.left) + size(node.right) + 1;
         }
         else if (compareResult > 0) {
             node.right = insertNode(node.right, key, value);
+            node.count = size(node.left) + size(node.right) + 1;
         }
         else {
             node.value = value;
@@ -33,6 +35,34 @@ public class BinarySearchTree<Key extends Comparable<Key>, Value> {
         return node;
     }
 
+    public int size() {
+        return size(root);
+    }
+
+    private int size(Node node) {
+        return (node != null) ? node.count : 0;
+    }
+
+    public int rank(Key key) {
+        return rank(root, key);
+    }
+
+    private int rank(Node node, Key key) {
+        if (node == null) {
+            return 0;
+        }
+
+        int keyCompare = key.compareTo(node.key);
+        if (keyCompare < 0) {
+            return rank(node.left, key);
+        }
+        else if (keyCompare > 0) {
+            return size(node.left) + rank(node.right, key) + 1;
+        }
+        else {
+           return size(node.left);
+        }
+    }
 
     public Value get(Key key) {
         Node node = getNode(root, key);
@@ -61,8 +91,10 @@ public class BinarySearchTree<Key extends Comparable<Key>, Value> {
     }
 
     public Key min() {
-        Predicate<Node> minTest = (n) -> n.left != null;
-        Node n = findBoundary(root, minTest);
+        Predicate<Node> leftTest = (n) -> n.left != null;
+        Function<Node, Node> leftChild = (n) -> n.left;
+
+        Node n = findBoundary(root, leftTest, leftChild);
         if (n == null) return null;
 
         return n.key;
@@ -70,26 +102,23 @@ public class BinarySearchTree<Key extends Comparable<Key>, Value> {
 
     public Key max() {
         Predicate<Node> maxTest = (n) -> n.right != null;
-        Node n = findBoundary(root, maxTest);
+        Function<Node, Node> rightChild = (n) -> n.right;
+        Node n = findBoundary(root, maxTest, rightChild);
+
         if (n == null) return null;
 
         return n.key;
     }
 
-
-    private Node findBoundary(Node node, Predicate<Node> boundary) {
+    private Node findBoundary(Node node, Predicate<Node> next, Function<Node, Node> child) {
         if (node == null) return null;
 
-        if (boundary.test(node)) {
-            return findBoundary(node.left, boundary);
+        if (next.test(node)) {
+            return findBoundary(child.apply(node), next, child);
         }
         else {
             return node;
         }
-    }
-
-    public void delete(Key key) {
-
     }
 
     public Iterable<Key> iterator() {
@@ -101,14 +130,16 @@ public class BinarySearchTree<Key extends Comparable<Key>, Value> {
         };
     }
 
-    public class Node {
+    private class Node {
         private Key key;
         private Value value;
         private Node left, right;
+        private int count;
 
-        public Node(Key key, Value value) {
+        public Node(Key key, Value value, int count) {
             this.key = key;
             this.value = value;
+            this.count = count;
         }
     }
 }
