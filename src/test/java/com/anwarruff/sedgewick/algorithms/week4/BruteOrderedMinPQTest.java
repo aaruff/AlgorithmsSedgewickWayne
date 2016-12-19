@@ -12,34 +12,34 @@ public class BruteOrderedMinPQTest {
     public void insert() throws Exception {
         String[] lettersInAlphabet = "abcdefghijklmnopqrstuvwxyz".split("");
         int max = 5;
-        BruteOrderedMinPQ<String> bruteOrderedMinPQ = new BruteOrderedMinPQ<>(max, lettersInAlphabet);
-        assertEquals(bruteOrderedMinPQ.size(), max, bruteOrderedMinPQ.size());
+        FixedOrderedMinPQ<String> fixedOrderedMinPQ = new FixedOrderedMinPQ<>(max, lettersInAlphabet);
+        assertEquals(fixedOrderedMinPQ.size(), max, fixedOrderedMinPQ.size());
     }
 
     @Test
     public void min() throws Exception {
         String[] firstEntries = "ghijklmnopqrstuvwxyz".split("");
-        BruteOrderedMinPQ<String> bruteOrderedMinPQ = new BruteOrderedMinPQ<>(5, firstEntries);
-        assertEquals("g", bruteOrderedMinPQ.min());
+        FixedOrderedMinPQ<String> fixedOrderedMinPQ = new FixedOrderedMinPQ<>(5, firstEntries);
+        assertEquals("g", fixedOrderedMinPQ.min());
 
         String[] secondEntries = "abc".split("");
         for (String s : secondEntries) {
-            bruteOrderedMinPQ.insert(s);
+            fixedOrderedMinPQ.insert(s);
         }
 
-        assertEquals("a", bruteOrderedMinPQ.min());
+        assertEquals("a", fixedOrderedMinPQ.min());
     }
 
     @Test
     public void delMin() throws Exception {
         String[] lettersInAlphabet = "abcdefghijklmnopqrstuvwxyz".split("");
-        BruteOrderedMinPQ<String> bruteOrderedMinPQ = new BruteOrderedMinPQ<>(5, lettersInAlphabet);
-        assertEquals("a", bruteOrderedMinPQ.delMin());
-        assertEquals("b", bruteOrderedMinPQ.delMin());
-        assertEquals("c", bruteOrderedMinPQ.delMin());
-        assertEquals("d", bruteOrderedMinPQ.delMin());
-        assertEquals("e", bruteOrderedMinPQ.delMin());
-        assertTrue(bruteOrderedMinPQ.isEmpty());
+        FixedOrderedMinPQ<String> fixedOrderedMinPQ = new FixedOrderedMinPQ<>(5, lettersInAlphabet);
+        assertEquals("a", fixedOrderedMinPQ.delMin());
+        assertEquals("b", fixedOrderedMinPQ.delMin());
+        assertEquals("c", fixedOrderedMinPQ.delMin());
+        assertEquals("d", fixedOrderedMinPQ.delMin());
+        assertEquals("e", fixedOrderedMinPQ.delMin());
+        assertTrue(fixedOrderedMinPQ.isEmpty());
     }
 
     @Test

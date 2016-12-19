@@ -1,6 +1,6 @@
 package com.anwarruff.sedgewick.algorithms.week4;
 
-public class BruteOrderedMinPQ<T extends Comparable<T>> {
+public class FixedOrderedMinPQ<T extends Comparable<T>> {
     T[] values;
     int head;
 
@@ -8,12 +8,12 @@ public class BruteOrderedMinPQ<T extends Comparable<T>> {
      * Bounded PQ
      * @param size
      */
-    public BruteOrderedMinPQ(int size) {
+    public FixedOrderedMinPQ(int size) {
         head = 0;
         values = (T[]) new Comparable[size];
     }
 
-    public BruteOrderedMinPQ(int size, T[] values) {
+    public FixedOrderedMinPQ(int size, T[] values) {
         head = 0;
         this.values = (T[]) new Comparable[size];
         for (int i = 0; i < values.length; i++) {
