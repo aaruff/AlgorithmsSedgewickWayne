@@ -16,7 +16,9 @@
           <root url="jar://$MODULE_DIR$/../../libs/algs4.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../../libs/algs4.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="library" name="Gradle: junit:junit:4.12" level="project" />
