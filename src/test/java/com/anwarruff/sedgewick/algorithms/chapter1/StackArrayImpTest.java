@@ -26,6 +26,17 @@ public class StackArrayImpTest {
     }
 
     @Test
+    public void testWhenArraySizeShrunkToZeroIsAbleToIncreaseSize() {
+        // array size is 5, now we decrease the size to zero
+        inputList.forEach(item -> stack.pop());
+        assertTrue(stack.isEmpty());
+
+        stack.push("Z");
+        assertFalse(stack.isEmpty());
+        assertEquals(1, stack.size());
+    }
+
+    @Test
     public void testIterator() throws Exception {
         assertEquals(inputList.size(), stack.size());
         List<String> popList = Arrays.asList("E", "D", "C", "B", "A");
