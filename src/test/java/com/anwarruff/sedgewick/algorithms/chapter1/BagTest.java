@@ -1,10 +1,10 @@
 package com.anwarruff.sedgewick.algorithms.chapter1;
 
+import com.anwarruff.sedgewick.algorithms.chapter1.section3.Bag;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.*;
 

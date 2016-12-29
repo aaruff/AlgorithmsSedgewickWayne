@@ -1,4 +1,4 @@
-package com.anwarruff.sedgewick.algorithms.chapter1;
+package com.anwarruff.sedgewick.algorithms.chapter1.section3;
 
 import java.util.Iterator;
 

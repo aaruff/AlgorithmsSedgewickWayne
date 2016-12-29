@@ -1,5 +1,6 @@
 package com.anwarruff.sedgewick.algorithms.chapter1;
 
+import com.anwarruff.sedgewick.algorithms.chapter1.section3.StackArrayImp;
 import org.junit.Before;
 import org.junit.Test;
 
