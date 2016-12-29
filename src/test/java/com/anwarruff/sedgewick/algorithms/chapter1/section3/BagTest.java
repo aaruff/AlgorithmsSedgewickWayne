@@ -1,6 +1,5 @@
 package com.anwarruff.sedgewick.algorithms.chapter1.section3;
 
-import com.anwarruff.sedgewick.algorithms.chapter1.section3.Bag;
 import org.junit.Test;
 
 import java.util.ArrayList;
