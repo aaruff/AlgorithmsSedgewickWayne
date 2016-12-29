@@ -1,6 +1,6 @@
-package com.anwarruff.sedgewick.algorithms.chapter1;
+package com.anwarruff.sedgewick.algorithms.chapter1.section3;
 
-import com.anwarruff.sedgewick.algorithms.chapter1.section3.BagArrayImp;
+import com.anwarruff.sedgewick.algorithms.chapter1.section3.Bag;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -9,21 +9,16 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 /**
- * Created by aruff on 12/28/16.
+ * Created by aruff on 12/22/16.
  */
-public class BagArrayImpTest {
+public class BagTest {
     @Test
     public void testBagIterator() throws Exception {
         ArrayList<String> entries = new ArrayList<>(Arrays.asList("A", "B", "C", "D", "E", "F", "G"));
-        BagArrayImp<String> b = new BagArrayImp<>();
-
-        assertTrue(b.isEmpty());
-
+        Bag<String> b = new Bag<>();
         for (String s : entries) {
             b.add(s);
         }
-
-        assertFalse(b.isEmpty());
 
         assertEquals(entries.size(), b.size());
 
@@ -34,4 +29,5 @@ public class BagArrayImpTest {
 
         assertEquals(0, entries.size());
     }
+
 }

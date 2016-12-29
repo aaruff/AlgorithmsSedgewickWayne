@@ -1,6 +1,6 @@
-package com.anwarruff.sedgewick.algorithms.chapter1;
+package com.anwarruff.sedgewick.algorithms.chapter1.section3;
 
-import com.anwarruff.sedgewick.algorithms.chapter1.section3.Queue;
+import com.anwarruff.sedgewick.algorithms.chapter1.section3.QueueArrayImp;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,16 +11,16 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * Created by aruff on 12/23/16.
+ * Created by aruff on 12/29/16.
  */
-public class QueueTest {
-    private Queue<String> queue;
+public class QueueArrayImpTest {
+    private QueueArrayImp<String> queue;
     List<String> inputList;
 
     @Before
     public void setUp() throws Exception {
         inputList = Arrays.asList("A", "B", "C", "D", "E");
-        queue = new Queue<>();
+        queue = new QueueArrayImp<>();
         for (String s : inputList) {
             queue.enqueue(s);
         }
@@ -39,7 +39,7 @@ public class QueueTest {
 
     @Test
     public void testSize() throws Exception {
-        Queue<String> q = new Queue<>();
+        QueueArrayImp<String> q = new QueueArrayImp<>();
         assertTrue(q.isEmpty());
         assertEquals(0, q.size());
 
@@ -48,7 +48,7 @@ public class QueueTest {
         assertFalse(q.isEmpty());
         assertEquals(1, q.size());
 
-        q.deque();
+        q.dequeue();
 
         assertEquals(0, q.size());
         assertTrue(q.isEmpty());
@@ -59,7 +59,7 @@ public class QueueTest {
         assertEquals(inputList.size(), queue.size());
 
         for (int i = inputList.size()-1, j = 0; i >= 0; --i, ++j) {
-            String s = queue.deque();
+            String s = queue.dequeue();
             assertTrue(s.equals(inputList.get(j)));
             assertEquals(i, queue.size());
 

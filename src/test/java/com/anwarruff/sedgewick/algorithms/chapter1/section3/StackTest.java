@@ -1,6 +1,6 @@
-package com.anwarruff.sedgewick.algorithms.chapter1;
+package com.anwarruff.sedgewick.algorithms.chapter1.section3;
 
-import com.anwarruff.sedgewick.algorithms.chapter1.section3.StackArrayImp;
+import com.anwarruff.sedgewick.algorithms.chapter1.section3.Stack;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -8,33 +8,21 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-/**
- * Created by aruff on 12/28/16.
- */
-public class StackArrayImpTest {
-    private StackArrayImp<String> stack;
+public class StackTest {
+    private Stack<String> stack;
     List<String> inputList;
 
     @Before
     public void setUp() throws Exception {
         inputList = Arrays.asList("A", "B", "C", "D", "E");
-        stack = new StackArrayImp<>();
+        stack = new Stack<>();
         for (String s : inputList) {
             stack.push(s);
         }
-    }
-
-    @Test
-    public void testWhenArraySizeShrunkToZeroIsAbleToIncreaseSize() {
-        // array size is 5, now we decrease the size to zero
-        inputList.forEach(item -> stack.pop());
-        assertTrue(stack.isEmpty());
-
-        stack.push("Z");
-        assertFalse(stack.isEmpty());
-        assertEquals(1, stack.size());
     }
 
     @Test
@@ -50,7 +38,7 @@ public class StackArrayImpTest {
 
     @Test
     public void testSize() throws Exception {
-        StackArrayImp<String> stack = new StackArrayImp<>();
+        Stack<String> stack = new Stack<>();
         assertTrue(stack.isEmpty());
         assertEquals(0, stack.size());
 
@@ -66,7 +54,7 @@ public class StackArrayImpTest {
     }
 
     @Test
-    public void testPop() throws Exception {
+    public void testDequeue() throws Exception {
         List<String> popList = Arrays.asList("E", "D", "C", "B", "A");
         assertEquals(popList.size(), stack.size());
         for (int i = popList.size()-1, j = 0; i >= 0; --i, ++j) {
