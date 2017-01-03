@@ -70,5 +70,5 @@ gradle-app.setting
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
-src/main/java/com/anwarruff/sedgewick/algorithms/week4/assignment/8puzzle.zip
+src/main/java/com/anwarruff/sedgewick/algorithms/part1.week4/assignment/8puzzle.zip
 
