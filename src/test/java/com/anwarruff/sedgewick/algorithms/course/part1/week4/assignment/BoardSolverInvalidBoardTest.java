@@ -45,7 +45,7 @@ public class BoardSolverInvalidBoardTest {
 //    @Test
 //    public void testFourByFour() {
 //        ArrayList<ExampleBoard> tests = new ArrayList<>();
-//        tests.add(new ExampleBoard("/week4/puzzle4x4-unsolvable.txt", -1));
+//        tests.add(new ExampleBoard("/part1.week4/puzzle4x4-unsolvable.txt", -1));
 //
 //        for (ExampleBoard test : tests) {
 //            Board board = ExampleBoard.boardReader(test.fileName);
