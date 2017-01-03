@@ -40,4 +40,19 @@ public class Graph {
     public Iterable<Integer> adj(int v) {
         return adj[v];
     }
+
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        String NEWLINE = System.getProperty("line.separator");
+        s.append(V + " vertices, " + E + " edges " + NEWLINE);
+        for (int v = 0; v < V; v++) {
+            s.append(v + ": ");
+            for (int w : adj[v]) {
+                s.append(w + " ");
+            }
+            s.append(NEWLINE);
+        }
+        return s.toString();
+    }
 }
