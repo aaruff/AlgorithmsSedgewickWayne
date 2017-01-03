@@ -1,4 +1,4 @@
-package com.anwarruff.sedgewick.algorithms.course.part2;
+package com.anwarruff.sedgewick.algorithms.course.part2.week1;
 
 import java.io.File;
 import java.io.FileNotFoundException;

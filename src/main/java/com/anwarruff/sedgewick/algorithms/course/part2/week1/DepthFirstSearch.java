@@ -1,4 +1,4 @@
-package com.anwarruff.sedgewick.algorithms.course.part2;
+package com.anwarruff.sedgewick.algorithms.course.part2.week1;
 
 /**
  * Created by aruff on 1/2/17.

@@ -1,4 +1,4 @@
-package com.anwarruff.sedgewick.algorithms.course.part2;
+package com.anwarruff.sedgewick.algorithms.course.part2.week1;
 
 import com.anwarruff.sedgewick.algorithms.textbook.chapter1.section3.Bag;
 
