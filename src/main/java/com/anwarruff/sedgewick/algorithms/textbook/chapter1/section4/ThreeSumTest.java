@@ -13,7 +13,7 @@ public class ThreeSumTest {
     private int[] numbers;
 
     public ThreeSumTest(String fileName, int size) throws FileNotFoundException {
-        File file = new File(getClass().getClassLoader().getResource("chapter1/section4/" + fileName).getFile());
+        File file = new File(getClass().getClassLoader().getResource("textbook/chapter1/section4/" + fileName).getFile());
         Scanner scanner = new Scanner(file);
 
         numbers = new int[size];
