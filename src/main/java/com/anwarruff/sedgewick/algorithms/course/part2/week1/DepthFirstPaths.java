@@ -5,12 +5,12 @@ import com.anwarruff.sedgewick.algorithms.textbook.chapter1.section3.Stack;
 /**
  * Created by aruff on 1/2/17.
  */
-public class DepthFirstSearch {
+public class DepthFirstPaths {
     private boolean marked[];
     private int[] edgeTo;
     private int s;
 
-    public DepthFirstSearch(Graph G, int s) {
+    public DepthFirstPaths(Graph G, int s) {
         marked = new boolean[G.V()];
         edgeTo = new int[G.V()];
         this.s = s;
