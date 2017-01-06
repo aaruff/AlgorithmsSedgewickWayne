@@ -54,6 +54,6 @@ public class GraphProcessor {
                 }
             }
         }
-        return selfLoops;
+        return selfLoops/2;
     }
 }
