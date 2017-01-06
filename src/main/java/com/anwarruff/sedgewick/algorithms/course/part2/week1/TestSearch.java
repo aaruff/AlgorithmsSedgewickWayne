@@ -24,6 +24,7 @@ public class TestSearch {
         GraphFactory graphFactory = new GraphFactory("tinyG.txt");
         Graph G = graphFactory.getGraph();
         System.out.println(G);
+        System.out.println("");
         TestSearch.test(G, 3);
     }
 }
