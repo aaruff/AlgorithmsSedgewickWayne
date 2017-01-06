@@ -5,7 +5,9 @@ import com.anwarruff.sedgewick.algorithms.textbook.chapter1.section3.Stack;
 import java.util.Iterator;
 
 /**
- * Created by aruff on 1/2/17.
+ * DepthFirstPaths takes a graph G and records the paths to all the nodes
+ * connected to s, and provides methods that can be used to determine if a
+ * given vertex is connected to vertex s.
  */
 public class DepthFirstPaths {
     private boolean marked[];
