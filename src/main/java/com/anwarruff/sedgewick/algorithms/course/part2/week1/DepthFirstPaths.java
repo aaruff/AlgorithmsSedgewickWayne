@@ -2,6 +2,8 @@ package com.anwarruff.sedgewick.algorithms.course.part2.week1;
 
 import com.anwarruff.sedgewick.algorithms.textbook.chapter1.section3.Stack;
 
+import java.util.Iterator;
+
 /**
  * Created by aruff on 1/2/17.
  */
@@ -43,5 +45,14 @@ public class DepthFirstPaths {
 
         path.push(s);
         return path;
+    }
+
+    public void printPath(int v) {
+        Iterator<Integer> i = pathTo(v).iterator();
+        while (i.hasNext()) {
+            System.out.print(i.next());
+            if (i.hasNext())
+                System.out.print(" - ");
+        }
     }
 }
