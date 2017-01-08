@@ -56,4 +56,26 @@ public class DepthFirstSearchTest {
         }
     }
 
+    @Test
+    public void testSubGraphZeroCount() throws Exception {
+        GraphFactory graphFactory = new GraphFactory("tinyG.txt");
+        DepthFirstSearch depthFirstSearch = new DepthFirstSearch(graphFactory.getGraph(), 0);
+        assertEquals(7, depthFirstSearch.count());
+    }
+
+    @Test
+    public void testSubGraphSevenCount() throws Exception {
+        GraphFactory graphFactory = new GraphFactory("tinyG.txt");
+        DepthFirstSearch depthFirstSearch = new DepthFirstSearch(graphFactory.getGraph(), 7);
+        assertEquals(2, depthFirstSearch.count());
+    }
+
+    @Test
+    public void testSubGraphNineCount() throws Exception {
+        GraphFactory graphFactory = new GraphFactory("tinyG.txt");
+        DepthFirstSearch depthFirstSearch = new DepthFirstSearch(graphFactory.getGraph(), 9);
+        assertEquals(4, depthFirstSearch.count());
+    }
+
+
 }
