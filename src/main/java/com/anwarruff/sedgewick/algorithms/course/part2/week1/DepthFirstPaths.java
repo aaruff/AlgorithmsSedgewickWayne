@@ -48,13 +48,4 @@ public class DepthFirstPaths {
         path.push(s);
         return path;
     }
-
-    public void printPath(int v) {
-        Iterator<Integer> i = pathTo(v).iterator();
-        while (i.hasNext()) {
-            System.out.print(i.next());
-            if (i.hasNext())
-                System.out.print(" - ");
-        }
-    }
 }
