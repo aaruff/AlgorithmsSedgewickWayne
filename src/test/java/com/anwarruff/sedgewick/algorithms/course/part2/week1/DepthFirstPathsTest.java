@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
  */
 public class DepthFirstPathsTest {
     @Test
-    public void testMarkedSubGraphZero() throws Exception {
+    public void testPathFromSourceToVertex() throws Exception {
         GraphFactory graphFactory = new GraphFactory("tinyG.txt");
 
         DepthFirstPaths depthFirstSearch = new DepthFirstPaths(graphFactory.getGraph(), 0);
