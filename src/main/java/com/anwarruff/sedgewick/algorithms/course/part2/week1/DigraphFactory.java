@@ -20,8 +20,8 @@ public class DigraphFactory {
             int edges = Integer.valueOf(scanner.nextLine());
             int i = 0;
             while (scanner.hasNextLine() && i < edges) {
-                String line = scanner.nextLine();
-                String[] parts = line.split(" ");
+                String line = scanner.nextLine().trim();
+                String[] parts = line.split("\\s+");
                 int v = Integer.valueOf(parts[0]);
                 int w = Integer.valueOf(parts[1]);
                 graph.addEdge(v, w);
