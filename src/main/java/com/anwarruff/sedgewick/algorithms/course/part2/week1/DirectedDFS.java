@@ -1,5 +1,7 @@
 package com.anwarruff.sedgewick.algorithms.course.part2.week1;
 
+import edu.princeton.cs.algs4.Digraph;
+
 /**
  * Created by aruff on 1/9/17.
  */

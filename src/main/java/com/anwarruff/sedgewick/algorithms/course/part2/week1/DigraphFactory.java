@@ -1,5 +1,6 @@
 package com.anwarruff.sedgewick.algorithms.course.part2.week1;
 
+import edu.princeton.cs.algs4.Digraph;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
