@@ -1,25 +1,26 @@
 package com.anwarruff.sedgewick.algorithms.course.part2.week2;
 
 import edu.princeton.cs.algs4.IndexMinPQ;
+import edu.princeton.cs.algs4.Stack;
 
 /**
  * Created by aruff on 2/1/17.
  */
 public class DijkstraShortestPath {
-    private DirectedEdge[] from;
-    private double[] weight;
+    private DirectedEdge[] edgeTo;
+    private double[] pathWeightTo;
     private IndexMinPQ<Double> pq;
 
     public DijkstraShortestPath(EdgeWeightedDigraph G, int s) {
-        from = new DirectedEdge[G.V()];
-        weight = new double[G.V()];
+        edgeTo = new DirectedEdge[G.V()];
+        pathWeightTo = new double[G.V()];
         pq = new IndexMinPQ<>(G.V());
 
         for (int v = 0; v < G.V(); v++) {
-            weight[v] = Double.POSITIVE_INFINITY;
+            pathWeightTo[v] = Double.POSITIVE_INFINITY;
         }
 
-        weight[s] = 0.0;
+        pathWeightTo[s] = 0.0;
         while (!pq.isEmpty()) {
             relax(G, pq.delMin());
         }
@@ -27,16 +28,40 @@ public class DijkstraShortestPath {
 
     // relax all vertices incident to v
     private void relax(EdgeWeightedDigraph G, int v) {
-        for (DirectedEdge edge : G.adj(v)) {
-            int neighbor = edge.to();
-            // if the existing path weight (weight[neighbor]) is strictly greater than the
-            // current path weight (weight[v] + v->neighbor.weight)
-            if (weight[neighbor] > weight[v] + edge.weight()) {
-
+        for (DirectedEdge edgeToW : G.adj(v)) {
+            int w = edgeToW.to();
+            if ((pathWeightTo[v] + edgeToW.weight()) < pathWeightTo[w]) {
+                pathWeightTo[w] = pathWeightTo[v] + edgeToW.weight();
+                edgeTo[w] = edgeToW;
+                if (pq.contains(w)) {
+                   pq.changeKey(w, pathWeightTo[w]);
+                }
+                else {
+                    pq.insert(w, pathWeightTo[w]);
+                }
             }
+        }
+    }
 
+    public double distTo(int v) {
+        return pathWeightTo[v];
+    }
+
+    public boolean hasPathTo(int v) {
+        return pathWeightTo[v] < Double.POSITIVE_INFINITY;
+    }
+
+    public Iterable<DirectedEdge> pathTo(int v) {
+        if (!hasPathTo(v)) {
+            return null;
         }
 
+        Stack<DirectedEdge> path = new Stack<>();
+        for (DirectedEdge edgeToVertex = edgeTo[v]; edgeToVertex != null; edgeToVertex = edgeTo[edgeToVertex.from()]) {
+            path.push(edgeToVertex);
+        }
+
+        return path;
     }
 
 }
