@@ -1,6 +1,7 @@
 package com.anwarruff.sedgewick.algorithms.course.part2.week2;
 
 import edu.princeton.cs.algs4.Bag;
+import edu.princeton.cs.algs4.DirectedEdge;
 
 /**
  * Created by aruff on 2/1/17.
