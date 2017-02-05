@@ -3,12 +3,12 @@ package com.anwarruff.sedgewick.algorithms.course.part2.week2;
 /**
  * Created by aruff on 2/1/17.
  */
-public class DirectedEdge {
-    private final int v;
-    private final int w;
+public class DirectedEdge<T> {
+    private final T v;
+    private final T w;
     private final double weight;
 
-    public DirectedEdge(int v, int w, double weight) {
+    public DirectedEdge(T v, T w, double weight) {
         this.v = v;
         this.w = w;
         this.weight = weight;
@@ -18,15 +18,15 @@ public class DirectedEdge {
         return weight;
     }
 
-    public int from() {
+    public T from() {
         return v;
     }
 
-    public int to() {
+    public T to() {
         return w;
     }
 
     public String toString() {
-        return String.format("%d->%d %.2f", v, w, weight);
+        return String.format("%s->%s %.2f", String.valueOf(v), String.valueOf(w), weight);
     }
 }
