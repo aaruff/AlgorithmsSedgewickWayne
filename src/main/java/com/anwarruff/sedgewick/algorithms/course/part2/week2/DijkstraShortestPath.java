@@ -2,53 +2,77 @@ package com.anwarruff.sedgewick.algorithms.course.part2.week2;
 
 import edu.princeton.cs.algs4.IndexMinPQ;
 import edu.princeton.cs.algs4.Stack;
+import edu.princeton.cs.algs4.DirectedEdge;
+import edu.princeton.cs.algs4.EdgeWeightedDigraph;
+
+import java.util.ArrayList;
 
 /**
  * Created by aruff on 2/1/17.
  */
 public class DijkstraShortestPath {
     private DirectedEdge[] edgeTo;
-    private double[] pathWeightTo;
+    private double[] weightOf;
     private IndexMinPQ<Double> pq;
 
     public DijkstraShortestPath(EdgeWeightedDigraph G, int s) {
         edgeTo = new DirectedEdge[G.V()];
-        pathWeightTo = new double[G.V()];
+        weightOf = new double[G.V()];
         pq = new IndexMinPQ<>(G.V());
 
         for (int v = 0; v < G.V(); v++) {
-            pathWeightTo[v] = Double.POSITIVE_INFINITY;
+            weightOf[v] = Double.POSITIVE_INFINITY;
         }
 
-        pathWeightTo[s] = 0.0;
+        // Setup initial conditions
+        weightOf[s] = 0.0;
+        pq.insert(s, weightOf[s]);
+
+        // Begin running the shortest path algorithm
         while (!pq.isEmpty()) {
-            relax(G, pq.delMin());
+            int w = pq.delMin();
+            relax(G, w);
         }
     }
 
-    // relax all vertices incident to v
     private void relax(EdgeWeightedDigraph G, int v) {
-        for (DirectedEdge edgeToW : G.adj(v)) {
-            int w = edgeToW.to();
-            if ((pathWeightTo[v] + edgeToW.weight()) < pathWeightTo[w]) {
-                pathWeightTo[w] = pathWeightTo[v] + edgeToW.weight();
-                edgeTo[w] = edgeToW;
+        for (DirectedEdge edgeVtoW : G.adj(v)) {
+            int w = edgeVtoW.to();
+            double thisEdgeWeightToW = weightOf[v] + edgeVtoW.weight();
+            if (thisEdgeWeightToW < weightOf[w]) {
                 if (pq.contains(w)) {
-                   pq.changeKey(w, pathWeightTo[w]);
+                    pq.changeKey(w, thisEdgeWeightToW);
+                } else {
+                    pq.insert(w, thisEdgeWeightToW);
                 }
-                else {
-                    pq.insert(w, pathWeightTo[w]);
-                }
+                weightOf[w] = thisEdgeWeightToW;
+                edgeTo[w] = edgeVtoW;
             }
         }
     }
 
     public double distTo(int v) {
-        return pathWeightTo[v];
+        return weightOf[v];
     }
 
+    public ArrayList<DirectedEdge> getPaths() {
+        ArrayList<DirectedEdge> list = new ArrayList<>();
+        for (int v = 0; v < edgeTo.length; v++) {
+            if (edgeTo[v] == null) {
+                list.add(new DirectedEdge(v, v, 0.0));
+            }
+            else {
+                DirectedEdge e = edgeTo[v];
+                list.add(new DirectedEdge(e.from(), e.to(), weightOf[v]));
+            }
+        }
+
+        return list;
+    }
+
+
     public boolean hasPathTo(int v) {
-        return pathWeightTo[v] < Double.POSITIVE_INFINITY;
+        return weightOf[v] < Double.POSITIVE_INFINITY;
     }
 
     public Iterable<DirectedEdge> pathTo(int v) {
