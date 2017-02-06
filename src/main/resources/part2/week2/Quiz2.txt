@@ -1,0 +1,15 @@
+8
+13
+A B 39
+B C 10
+B G 3
+C D 36
+E A 12
+E B 54
+E F 17
+F B 38
+F G 45
+G C 5
+G H 36
+H C 4
+H D 9
