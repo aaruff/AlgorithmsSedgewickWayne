@@ -17,19 +17,31 @@ public class AcyclicShortestPath {
         edgeTo = new DirectedEdge[G.V()];
         shortestDistanceTo = new double[G.V()];
 
-        // Initialize all vertex path weights to pos infinity
+        initializeDistances(G, s);
+
+        Topological top = new Topological(G);
+        findShortestPath(top.order(), G);
+    }
+
+    public AcyclicShortestPath(Iterable<Integer> order, EdgeWeightedDigraph G, int s) {
+        edgeTo = new DirectedEdge[G.V()];
+        shortestDistanceTo = new double[G.V()];
+
+        initializeDistances(G, s);
+        findShortestPath(order, G);
+    }
+
+    private void findShortestPath(Iterable<Integer> order, EdgeWeightedDigraph G) {
+        for (Integer v : order) {
+            relax(G, v);
+        }
+    }
+
+    private void initializeDistances(EdgeWeightedDigraph G, int s) {
         for (int v = 0; v < G.V(); v++) {
             shortestDistanceTo[v] = Double.POSITIVE_INFINITY;
         }
-
-        // Set the source to zero
-        shortestDistanceTo[0] = 0.0;
-
-        // Perform the topological sort
-        Topological top = new Topological(G);
-        for (int v : top.order()) {
-            relax(G, v);
-        }
+        shortestDistanceTo[s] = 0.0;
     }
 
     // relax all vertices incident to v
