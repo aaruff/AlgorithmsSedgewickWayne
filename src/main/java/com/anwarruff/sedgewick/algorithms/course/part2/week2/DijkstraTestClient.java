@@ -1,7 +1,11 @@
 package com.anwarruff.sedgewick.algorithms.course.part2.week2;
 
 
+import edu.princeton.cs.algs4.DirectedEdge;
+import edu.princeton.cs.algs4.EdgeWeightedDigraph;
+
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by aruff on 2/4/17.
@@ -12,13 +16,26 @@ public class DijkstraTestClient {
         EdgeWeightedGraphFactory factory = new EdgeWeightedGraphFactory("Quiz1.txt", vertexType);
         VertexEncoder encoder = factory.getEncoding();
 
-        DijkstraShortestPath dsp = new DijkstraShortestPath(factory.getGraph(), encoder.getEncoding("B"));
-        ArrayList<DirectedEdge<String>> list = new ArrayList<>();
-        for (edu.princeton.cs.algs4.DirectedEdge e : dsp.getPaths()) {
-            String v = encoder.getEncoding(e.from());
-            String w = encoder.getEncoding(e.to());
+        int sourceVertex = encoder.getEncoding("B");
+        int stopVertex = encoder.getEncoding("G");
+        DijkstraShortestPath dsp = new DijkstraShortestPath(factory.getGraph(), sourceVertex, stopVertex);
+
+        ArrayList<ComparableDirectedEdge> edges = new ArrayList<>();
+        for (DirectedEdge e : dsp.getPaths()) {
+            String from = encoder.getEncoding(e.from());
+            String to = encoder.getEncoding(e.to());
             double weight = e.weight();
-            System.out.println(v + "->" + w + " " + String.format("%5.2f", weight));
+            edges.add(new ComparableDirectedEdge(from, to, weight));
+        }
+
+        Collections.sort(edges);
+
+        for (ComparableDirectedEdge e : edges) {
+            System.out.println(e.from() + "->" + e.to() + " " + String.format("%5.2f", e.weight()));
+        }
+
+        for (ComparableDirectedEdge e : edges) {
+            System.out.print(String.format("%d ", (long) e.weight()));
         }
 
     }
