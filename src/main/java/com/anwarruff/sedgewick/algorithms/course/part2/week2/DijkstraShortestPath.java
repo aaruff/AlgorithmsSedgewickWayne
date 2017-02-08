@@ -20,19 +20,47 @@ public class DijkstraShortestPath {
         weightOf = new double[G.V()];
         pq = new IndexMinPQ<>(G.V());
 
+        initWeights(G, s);
+        pq.insert(s, weightOf[s]);
+
+        findShortestPath(G);
+    }
+
+    public DijkstraShortestPath(EdgeWeightedDigraph G, int s, int haltVertex) {
+        edgeTo = new DirectedEdge[G.V()];
+        weightOf = new double[G.V()];
+        pq = new IndexMinPQ<>(G.V());
+
+        initWeights(G, s);
+        pq.insert(s, weightOf[s]);
+
+        findShortestPath(G, haltVertex);
+    }
+
+    private void findShortestPath(EdgeWeightedDigraph G) {
+        while (!pq.isEmpty()) {
+            int w = pq.delMin();
+            relax(G, w);
+        }
+    }
+
+    private void findShortestPath(EdgeWeightedDigraph G, int haltVertex) {
+        while (!pq.isEmpty()) {
+            int w = pq.delMin();
+            relax(G, w);
+            if (w == haltVertex) {
+                break;
+            }
+        }
+    }
+
+    private void initWeights(EdgeWeightedDigraph G, int s) {
         for (int v = 0; v < G.V(); v++) {
             weightOf[v] = Double.POSITIVE_INFINITY;
         }
 
         // Setup initial conditions
         weightOf[s] = 0.0;
-        pq.insert(s, weightOf[s]);
-
-        // Begin running the shortest path algorithm
-        while (!pq.isEmpty()) {
-            int w = pq.delMin();
-            relax(G, w);
-        }
     }
 
     private void relax(EdgeWeightedDigraph G, int v) {
