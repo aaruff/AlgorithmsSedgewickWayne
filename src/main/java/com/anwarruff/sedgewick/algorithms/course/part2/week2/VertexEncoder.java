@@ -21,12 +21,20 @@ public class VertexEncoder {
     }
 
     public void encode(String name) {
+        if (toInteger.containsKey(name)) {
+            return;
+        }
+
         toInteger.put(name, nextId);
         toString.put(nextId, name);
         ++nextId;
     }
 
     public int getEncoding(String name) {
+        if (!toInteger.containsKey(name)) {
+            encode(name);
+        }
+
         return toInteger.get(name);
     }
 
