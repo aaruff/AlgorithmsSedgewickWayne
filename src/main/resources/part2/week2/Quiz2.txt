@@ -1,15 +1,15 @@
 8
 13
-A B 39
-B C 10
-B G 3
-C D 36
-E A 12
-E B 54
-E F 17
-F B 38
-F G 45
-G C 5
-G H 36
-H C 4
-H D 9
+B A 10
+C B 50
+C D 66
+C G 36
+C H 27
+E A 1
+F A 4
+F B 5
+F E 38
+G B 13
+G F 28
+H D 33
+H G 2
