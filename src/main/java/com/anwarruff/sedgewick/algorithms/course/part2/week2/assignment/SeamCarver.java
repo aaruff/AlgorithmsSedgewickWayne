@@ -2,6 +2,8 @@ package com.anwarruff.sedgewick.algorithms.course.part2.week2.assignment;
 
 import edu.princeton.cs.algs4.Picture;
 
+import java.awt.*;
+
 /**
  * Created by aruff on 2/9/17.
  */
@@ -11,6 +13,7 @@ public class SeamCarver {
     public SeamCarver(Picture picture) {
         if (picture == null)
             throw new NullPointerException();
+
         this.picture = new Picture(picture);
     }
 
@@ -26,11 +29,27 @@ public class SeamCarver {
         return picture.height();
     }
 
-    // TODO
-    public double energy(int column, int row) {
-        if (column < 0 || column > picture.width()-1 || row < 0 || row > picture.height()-1)
+    private int squaredGradient(int xf, int yf, int xi, int yi) {
+        Color ci = picture.get(xi, yi);
+        Color cf = picture.get(xf, yf);
+        int redDiff = cf.getRed() - ci.getRed();
+        int greenDiff = cf.getGreen() - ci.getGreen();
+        int blueDiff = cf.getBlue() - ci.getBlue();
+
+        return redDiff*redDiff + greenDiff*greenDiff + blueDiff*blueDiff;
+    }
+
+    public double energy(int col, int row) {
+        if (col < 0 || col > picture.width()-1 || row < 0 || row > picture.height()-1)
             throw new IndexOutOfBoundsException();
-        return 0.0;
+
+        final int BorderPixelEnergy = 1000;
+        if (col == 0 || col == picture.width()-1 || row == 0 || row == picture.height()-1)
+            return BorderPixelEnergy;
+
+        int colGradient = squaredGradient(col + 1, row, col - 1, row);
+        int rowGradient = squaredGradient(col, row + 1, col, row - 1);
+        return Math.sqrt(colGradient + rowGradient);
     }
 
     // TODO
