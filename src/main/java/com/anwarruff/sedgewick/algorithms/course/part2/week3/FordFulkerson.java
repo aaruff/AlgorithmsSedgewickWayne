@@ -13,25 +13,25 @@ public class FordFulkerson {
     private FlowEdge[] edgeTo;    // edgeTo[v] = last edge on shortest residual s->v path
     private double value;         // current value of max flow
   
-    public FordFulkerson(FlowNetwork G, int s, int t) {
+    public FordFulkerson(FlowNetwork G, int source, int sink) {
         V = G.V();
-        validate(s);
-        validate(t);
-        if (s == t)               throw new IllegalArgumentException("Source equals sink");
-        if (!isFeasible(G, s, t)) throw new IllegalArgumentException("Initial flow is infeasible");
+        validate(source);
+        validate(sink);
+        if (source == sink)               throw new IllegalArgumentException("Source equals sink");
+        if (!isFeasible(G, source, sink)) throw new IllegalArgumentException("Initial flow is infeasible");
 
         // while there exists an augmenting path, use it
-        value = excess(G, t);
-        while (hasAugmentingPath(G, s, t)) {
+        value = excess(G, sink);
+        while (hasAugmentingPath(G, source, sink)) {
 
             // compute bottleneck capacity
             double bottle = Double.POSITIVE_INFINITY;
-            for (int v = t; v != s; v = edgeTo[v].other(v)) {
+            for (int v = sink; v != source; v = edgeTo[v].other(v)) {
                 bottle = Math.min(bottle, edgeTo[v].residualCapacityTo(v));
             }
 
             // augment flow
-            for (int v = t; v != s; v = edgeTo[v].other(v)) {
+            for (int v = sink; v != source; v = edgeTo[v].other(v)) {
                 edgeTo[v].addResidualFlowTo(v, bottle); 
             }
 
@@ -39,7 +39,7 @@ public class FordFulkerson {
         }
 
         // check optimality conditions
-        assert check(G, s, t);
+        assert check(G, source, sink);
     }
 
     public double value()  {
