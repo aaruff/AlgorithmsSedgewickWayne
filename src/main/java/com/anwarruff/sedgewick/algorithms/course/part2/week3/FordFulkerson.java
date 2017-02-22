@@ -1,7 +1,5 @@
 package com.anwarruff.sedgewick.algorithms.course.part2.week3;
 
-import edu.princeton.cs.algs4.FlowEdge;
-import edu.princeton.cs.algs4.FlowNetwork;
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.StdOut;
 
