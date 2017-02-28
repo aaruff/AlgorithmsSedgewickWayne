@@ -56,23 +56,23 @@ public class FlowEdge {
         return flow;
     }
 
-    public int other(int vertex) {
-        if      (vertex == from) return to;
-        else if (vertex == to) return from;
+    public int other(int thisVertex) {
+        if      (thisVertex == from) return to;
+        else if (thisVertex == to) return from;
         else throw new IllegalArgumentException("invalid endpoint");
     }
 
-    public double residualCapacityTo(int vertex) {
-        if      (vertex == from) return flow;              // backward edge
-        else if (vertex == to) return capacity - flow;   // forward edge
+    public double residualCapacityTo(int vertexTo) {
+        if      (vertexTo == from) return flow;              // backward edge
+        else if (vertexTo == to) return capacity - flow;   // forward edge
         else throw new IllegalArgumentException("invalid endpoint");
     }
 
-    public void addResidualFlowTo(int vertex, double delta) {
-        if (!(delta >= 0.0)) throw new IllegalArgumentException("Delta must be nonnegative");
+    public void addResidualFlowTo(int toVertex, double difference) {
+        if (!(difference >= 0.0)) throw new IllegalArgumentException("Delta must be nonnegative");
 
-        if      (vertex == from) flow -= delta;           // backward edge
-        else if (vertex == to) flow += delta;           // forward edge
+        if      (toVertex == from) flow -= difference;           // backward edge
+        else if (toVertex == to) flow += difference;           // forward edge
         else throw new IllegalArgumentException("invalid endpoint");
 
         // round flow to 0 or capacity if within floating-point precision
