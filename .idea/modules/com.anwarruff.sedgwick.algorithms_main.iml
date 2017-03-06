@@ -15,9 +15,7 @@
           <root url="jar://$MODULE_DIR$/../../libs/algs4.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../libs/algs4.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
   </component>
