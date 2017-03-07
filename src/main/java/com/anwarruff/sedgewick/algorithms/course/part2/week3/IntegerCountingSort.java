@@ -7,7 +7,7 @@ public class IntegerCountingSort {
 
     private static int maxInteger(int[] values) {
         int max = 0;
-        for (Integer val : values) {
+        for (int val : values) {
             if (val > max) {
                 max = val;
             }
