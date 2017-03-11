@@ -4,44 +4,55 @@ package com.anwarruff.sedgewick.algorithms.course.part2.week3;
  * Created by aruff on 3/10/17.
  */
 public class MSDStringSort {
-    private static int R = 256;
-    private static final int cutoff = 15;
+    private static int RADIX = 256;
+    private static final int ZERO_OFFSET = 1;
+    private static final int OFFSET = 2; // 1 (zero) + 1 (negative one offset)
+    private static final int CUTOFF = 15;
     private static String[] aux;
 
+    // Returns the ASCII integer value of character at the specified position.
     private static int charAt(String s, int position) {
         return (position < s.length()) ? s.charAt(position) : -1;
     }
 
     public static void sort(String[] strings) {
-        int N = strings.length;
-        aux = new String[N];
-        sort(strings, 0, N-1, 0);
+        int numStrings = strings.length;
+        aux = new String[numStrings];
+        sort(strings, 0, numStrings-1, 0);
     }
 
     private static void sort(String[] strings, int low, int high, int position) {
-        if (high <= low + cutoff) {
+        if (high <= low + CUTOFF) {
             insertionSort(strings, low, high, position);
             return;
         }
 
         // Count frequencies
-        int[] count = new int[R + 2];
-        for (int i = low; i < high; i++) {
-            count[charAt(strings[i], position) + 2]++;
-        }
-
-        // Count to Indices
-        for (int radix = 0; radix < R+1; radix++) {
-            count[radix + 1] += count[radix];
-        }
-
-        // Copy back
+        final int COUNT_SIZE = RADIX + OFFSET;
+        int[] count = new int[COUNT_SIZE];
         for (int i = low; i <= high; i++) {
-            aux[count[charAt(strings[i], position) + 1]++] = strings[i];
+            int charInt = charAt(strings[i], position);
+            count[charInt + OFFSET]++;
+        }
+
+        // Transform counts to indices
+        for (int p = 1; p < COUNT_SIZE; p++) {
+            count[p] += count[p - 1];
+        }
+
+        // Using indices in count[] to distribute strings into aux[]
+        for (int i = low; i <= high; i++) {
+            int charInt = charAt(strings[i], position);
+            aux[count[charInt + ZERO_OFFSET]++] = strings[i];
+        }
+
+        // Note: aux[] is accessed from 0 to (high - low), where strings[] is accessed from low to high
+        for (int i = low; i <= high; i++) {
+            strings[i] = aux[i - low];
         }
 
         // Recursively sort remaining columns
-        for (int r = 0; r < R; r++) {
+        for (int r = 0; r < RADIX; r++) {
             sort(strings, low + count[r], low + count[r + 1] - 1, position + 1);
         }
     }
