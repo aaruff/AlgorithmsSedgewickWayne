@@ -10,7 +10,7 @@ import java.util.Scanner;
  */
 public class GraphFactory {
     private Graph graph;
-    public GraphFactory(String fileName) {
+    GraphFactory(String fileName) {
         File file = new File(getClass().getClassLoader().getResource("part2/week1/" + fileName).getFile());
         try {
             Scanner scanner = new Scanner(file);
