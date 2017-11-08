@@ -13,8 +13,7 @@ import static org.junit.Assert.*;
 public class DepthFirstSearchTest {
     @Test
     public void testMarkedSubGraphZero() throws Exception {
-        GraphFactory graphFactory = new GraphFactory("tinyG.txt");
-        DepthFirstSearch depthFirstSearch = new DepthFirstSearch(graphFactory.getGraph(), 0);
+        DepthFirstSearch depthFirstSearch = new DepthFirstSearch(GraphFactory.getGraph("tinyG.txt"), 0);
         ArrayList<Integer> zeroConnected = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 6));
         ArrayList<Integer> zeroNotConnected = new ArrayList<>(Arrays.asList(7, 8, 9, 10, 11, 12));
 
@@ -28,8 +27,7 @@ public class DepthFirstSearchTest {
 
     @Test
     public void testMarkedSubGraphSeven() throws Exception {
-        GraphFactory graphFactory = new GraphFactory("tinyG.txt");
-        DepthFirstSearch depthFirstSearch = new DepthFirstSearch(graphFactory.getGraph(), 7);
+        DepthFirstSearch depthFirstSearch = new DepthFirstSearch(GraphFactory.getGraph("tinyG.txt"), 7);
         ArrayList<Integer> sevenConnected = new ArrayList<>(Arrays.asList(7, 8));
         ArrayList<Integer> sevenNotConnected = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 9, 10, 11, 12));
 
@@ -43,8 +41,7 @@ public class DepthFirstSearchTest {
 
     @Test
     public void testMarkedSubGraphNine() throws Exception {
-        GraphFactory graphFactory = new GraphFactory("tinyG.txt");
-        DepthFirstSearch depthFirstSearch = new DepthFirstSearch(graphFactory.getGraph(), 9);
+        DepthFirstSearch depthFirstSearch = new DepthFirstSearch(GraphFactory.getGraph("tinyG.txt"), 9);
         ArrayList<Integer> nineConnected = new ArrayList<>(Arrays.asList(9, 10, 11, 12));
         ArrayList<Integer> nineNotConnected = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8));
 
@@ -58,24 +55,19 @@ public class DepthFirstSearchTest {
 
     @Test
     public void testSubGraphZeroCount() throws Exception {
-        GraphFactory graphFactory = new GraphFactory("tinyG.txt");
-        DepthFirstSearch depthFirstSearch = new DepthFirstSearch(graphFactory.getGraph(), 0);
+        DepthFirstSearch depthFirstSearch = new DepthFirstSearch(GraphFactory.getGraph("tinyG.txt"), 0);
         assertEquals(7, depthFirstSearch.count());
     }
 
     @Test
     public void testSubGraphSevenCount() throws Exception {
-        GraphFactory graphFactory = new GraphFactory("tinyG.txt");
-        DepthFirstSearch depthFirstSearch = new DepthFirstSearch(graphFactory.getGraph(), 7);
+        DepthFirstSearch depthFirstSearch = new DepthFirstSearch(GraphFactory.getGraph("tinyG.txt"), 7);
         assertEquals(2, depthFirstSearch.count());
     }
 
     @Test
     public void testSubGraphNineCount() throws Exception {
-        GraphFactory graphFactory = new GraphFactory("tinyG.txt");
-        DepthFirstSearch depthFirstSearch = new DepthFirstSearch(graphFactory.getGraph(), 9);
+        DepthFirstSearch depthFirstSearch = new DepthFirstSearch(GraphFactory.getGraph("tinyG.txt"), 9);
         assertEquals(4, depthFirstSearch.count());
     }
-
-
 }
